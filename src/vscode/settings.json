@@ -1,0 +1,27 @@
+{
+  // 저장할 때 자동 포맷
+  "editor.formatOnSave": true,
+
+  // 후행 공백 삭제 (파일 끝, 줄 끝 공백 제거)
+  "files.trimTrailingWhitespace": true,
+
+  // Markdown 파일에선 후행 공백 삭제 끔 (보통 마크다운에선 공백 활용할 수 있으니까)
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false
+  },
+
+  // 탭 크기 (스페이스 개수)
+  "editor.tabSize": 2,
+  // 탭 대신 스페이스 사용
+  "editor.insertSpaces": true,
+
+  // 공백(스페이스, 탭 등) 시각적으로 보여주기
+  "editor.renderWhitespace": "all",
+
+  // 기본 포맷터 지정 → Prettier 확장 필요
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Prettier 옵션들 (세미콜론 강제, 작은따옴표 사용 등)
+  "prettier.semi": true,
+  "prettier.singleQuote": true
+}
