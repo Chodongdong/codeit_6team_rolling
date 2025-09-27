@@ -1,5 +1,5 @@
 import React from "react";
-import Dropdown from "./components/Dropdown";
+import Dropdown from "./components/common/Dropdown";
 
 function App() {
   const options = ["Option 1", "Option 2", "Option 3"];
