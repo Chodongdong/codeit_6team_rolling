@@ -1,8 +1,35 @@
+/**
+ * ✅ Dropdown 컴포넌트 사용법
+ *
+ * props:
+ * - options: string[]                // 드롭다운에 표시될 옵션 리스트
+ * - placeholder?: string             // 아무것도 선택하지 않았을 때 보여줄 기본 텍스트 (기본값: "Placeholder")
+ * - error?: string                   // 에러 메시지 (문자열이 주어지면 상태가 "error"로 적용되고 메시지 출력)
+ * - disabled?: boolean               // 드롭다운 비활성화 여부 (true면 클릭/선택 불가)
+ * - onSelect?: (value: string) => void // 옵션 선택 시 실행할 콜백 함수
+ *
+ * 상태별 동작:
+ * - inactive : 기본 상태
+ * - focused  : 드롭다운이 focus된 상태
+ * - actived  : 드롭다운이 열려 있는 상태
+ * - disabled : 비활성화 상태 (hover/focus 불가)
+ * - error    : 에러 상태 (빨간 border 유지, hover 막힘 / focus & 선택 가능)
+ *
+ * 사용 예시:
+ * <Dropdown
+ *    options={["Option 1", "Option 2", "Option 3"]}
+ *    placeholder="옵션을 선택하세요"
+ *    error="필수 항목입니다."
+ *    disabled={false}
+ *    onSelect={(value) => console.log("선택된 값:", value)}
+ * />
+ */
+
 import React, { useState } from "react";
 import "./Dropdown.css";
 
-import arrowRight from "../assets/arrow_right.png";
-import arrowTop from "../assets/arrow_top.png";
+import arrowRight from "../../assets/arrow_right.png";
+import arrowTop from "../../assets/arrow_top.png";
 
 type DropdownState = "inactive" | "focused" | "actived" | "disabled" | "error";
 
