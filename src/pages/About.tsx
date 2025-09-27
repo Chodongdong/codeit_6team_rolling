@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export default function About() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<number | null>(null);
+
   useEffect(() => {
     console.log(data);
+    setData(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
