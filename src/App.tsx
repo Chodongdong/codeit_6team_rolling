@@ -15,7 +15,7 @@ function App() {
       <BadgeEmoji emoji="party" count={14} />
       <div>
         <h3>선택된 값: {toggleValue}</h3>
-        <ToggleButton value={toggleValue} onChange={setToggleValue} />{' '}
+        <ToggleButton value={toggleValue} onToggle={setToggleValue} />{' '}
       </div>
     </>
   );
