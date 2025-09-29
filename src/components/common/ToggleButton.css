@@ -32,6 +32,8 @@
 
 /* 버튼(각 옵션) 텍스트 */
 .option {
+  all: unset;
+
   width: 50%;
   height: 100%;
   display: flex;

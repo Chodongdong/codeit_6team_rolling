@@ -12,18 +12,18 @@ const ToggleButton = ({ value, onToggle }: ToggleButtonProps) => {
     <div className="ToggleButton">
       <div className={`slider ${value === 'color' ? 'left' : 'right'}`} />
 
-      <div
+      <button
         className={`option ${value === 'color' ? 'active' : ''}`}
         onClick={() => onToggle('color')}
       >
         컬러
-      </div>
-      <div
+      </button>
+      <button
         className={`option ${value === 'image' ? 'active' : ''}`}
         onClick={() => onToggle('image')}
       >
         이미지
-      </div>
+      </button>
     </div>
   );
 };
