@@ -41,11 +41,6 @@
   border: 1px solid var(--Error, #dc3a3a);
 }
 
-/* ✅ Error 상태에서는 hover 무시 */
-.dropdown-error:hover {
-  border: 1px solid var(--Error, #dc3a3a);
-}
-
 /* 에러 메시지 */
 .dropdown-error-text {
   display: inline-flex;

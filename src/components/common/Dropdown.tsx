@@ -2,20 +2,20 @@
  * ✅ Dropdown 컴포넌트 사용법
  *
  * props:
- * - options: string[]                // 드롭다운에 표시될 옵션 리스트
- * - placeholder?: string             // 아무것도 선택하지 않았을 때 보여줄 기본 텍스트 (기본값: "Placeholder")
- * - error?: string                   // 에러 메시지 (문자열이 주어지면 상태가 "error"로 적용되고 메시지 출력)
- * - onSelect?: (value: string) => void // 옵션 선택 시 실행할 콜백 함수
- * - className?: string               // 외부에서 커스텀 스타일 적용 가능
- * - (기타 button 기본 props)           // disabled, onClick, aria-* 등 기본 button 속성들
+ * - options: string[]                  // 드롭다운에 표시될 옵션 리스트
+ * - placeholder?: string               // 선택 전 기본 텍스트 (기본값: "Placeholder")
+ * - error?: string                     // 에러 메시지 (있으면 상태 "error"로 표시 + 메시지 출력)
+ * - onSelect?: (value: string) => void // 옵션 선택 시 실행되는 콜백
+ * - onErrorClear?: () => void          // 드롭다운 열릴 때 에러를 없애는 콜백
+ * - className?: string                 // 외부에서 추가 스타일 지정
+ * - (기타 button 기본 props)             // disabled, onClick, aria-* 등 button 속성들
  */
 
 import React, { useState } from "react";
-import type { ComponentPropsWithoutRef } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import "./Dropdown.css";
 
-import arrowRight from "../../assets/arrow_right.png";
-import arrowTop from "../../assets/arrow_top.png";
+import { arrowRight, arrowTop } from "../../assets";
 
 type DropdownState = "inactive" | "focused" | "actived" | "disabled" | "error";
 
@@ -24,8 +24,9 @@ type DropdownProps = {
   placeholder?: string;
   error?: string;
   onSelect?: (value: string) => void;
+  onErrorClear?: () => void;
   className?: string;
-} & ComponentPropsWithoutRef<"button">; // button 기본 props 상속
+} & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const getDropdownState = (
   error?: string,
@@ -40,38 +41,54 @@ const getDropdownState = (
   return "inactive";
 };
 
-const Dropdown: React.FC<DropdownProps> = ({
+function Dropdown({
   options,
   placeholder = "Placeholder",
   error,
   onSelect,
+  onErrorClear,
   className = "",
+  disabled,
   ...props
-}) => {
-  const [selected, setSelected] = useState<string>("");
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isFocused, setIsFocused] = useState<boolean>(false);
+}: DropdownProps) {
+  const [selected, setSelected] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
+  const isInteractive = !disabled;
+  const state = getDropdownState(error, disabled, isOpen, isFocused);
+
+  /** 옵션 선택 시 실행 */
   const handleSelect = (value: string) => {
     setSelected(value);
     setIsOpen(false);
-    if (onSelect) onSelect(value);
+    onSelect?.(value);
   };
 
-  const state = getDropdownState(error, props.disabled, isOpen, isFocused);
-  const isInteractive = !props.disabled;
+  /** 드롭다운 열기/닫기 토글 */
+  const toggleOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isInteractive) return;
+
+    const next = !isOpen;
+    setIsOpen(next);
+
+    // ✅ 열릴 때 에러 초기화
+    if (next) {
+      onErrorClear?.();
+    }
+
+    props.onClick?.(e);
+  };
 
   return (
-    <div className="dropdown-wrapper">
+    <div className={`dropdown-wrapper ${className}`}>
       {/* 트리거 버튼 */}
       <button
         type="button"
-        className={`dropdown dropdown-${state} ${className}`}
-        {...props} // 여기 안에 disabled 등 기본 button 속성 포함
-        onClick={(e) => {
-          if (isInteractive) setIsOpen((prev) => !prev);
-          props.onClick?.(e);
-        }}
+        className={`dropdown dropdown-${state}`}
+        disabled={disabled}
+        {...props}
+        onClick={toggleOpen}
         onFocus={(e) => {
           if (isInteractive) setIsFocused(true);
           props.onFocus?.(e);
@@ -97,14 +114,14 @@ const Dropdown: React.FC<DropdownProps> = ({
       {/* 옵션 리스트 */}
       {isOpen && isInteractive && (
         <div className="dropdown-list">
-          {options.map((opt, idx) => (
+          {options.map((opt) => (
             <div
-              key={idx}
+              key={opt}
               className={`dropdown-item ${
                 opt === selected ? "active-option" : ""
               }`}
               tabIndex={-1}
-              onMouseDown={(e) => e.preventDefault()}
+              onMouseDown={(e) => e.preventDefault()} // blur 방지
               onClick={() => handleSelect(opt)}
             >
               {opt}
@@ -117,6 +134,6 @@ const Dropdown: React.FC<DropdownProps> = ({
       {error && <p className="dropdown-error-text">{error}</p>}
     </div>
   );
-};
+}
 
 export default Dropdown;
