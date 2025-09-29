@@ -5,7 +5,7 @@ import BadgeEmoji from './components/common/BadgeEmoji';
 import ToggleButton from './components/common/ToggleButton';
 
 function App() {
-  const [toggleValue, setToggleValue] = useState<'color' | 'image'>('color');
+  const [toggleValue, setToggleValue] = useState('컬러');
   return (
     <>
       <Badge variant="other" className="is-selected" />
@@ -15,7 +15,12 @@ function App() {
       <BadgeEmoji emoji="party" count={14} />
       <div>
         <h3>선택된 값: {toggleValue}</h3>
-        <ToggleButton value={toggleValue} onToggle={setToggleValue} />{' '}
+        <ToggleButton
+          options={['컬러', '이미지']}
+          value={toggleValue}
+          onValueChange={setToggleValue}
+          className="styles.myToggle"
+        />
       </div>
     </>
   );

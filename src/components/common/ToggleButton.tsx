@@ -1,29 +1,35 @@
 import './ToggleButton.css';
+import type { ComponentPropsWithoutRef } from 'react';
 
-type ToggleOption = 'color' | 'image';
+type ToggleOption = string;
 
-interface ToggleButtonProps {
+interface ToggleButtonProps extends ComponentPropsWithoutRef<'div'> {
+  options: [ToggleOption, ToggleOption]; // 토글 두 개의 값만 받도록 제한
   value: ToggleOption;
-  onToggle: (value: ToggleOption) => void;
+  onValueChange: (value: ToggleOption) => void;
 }
 
-const ToggleButton = ({ value, onToggle }: ToggleButtonProps) => {
+const ToggleButton = ({
+  options,
+  value,
+  onValueChange,
+  className,
+  ...rest
+}: ToggleButtonProps) => {
   return (
-    <div className="ToggleButton">
-      <div className={`slider ${value === 'color' ? 'left' : 'right'}`} />
+    <div className={`ToggleButton ${className ?? ''}`} {...rest}>
+      <div className={`slider ${value === options[0] ? 'left' : 'right'}`} />
 
-      <button
-        className={`option ${value === 'color' ? 'active' : ''}`}
-        onClick={() => onToggle('color')}
-      >
-        컬러
-      </button>
-      <button
-        className={`option ${value === 'image' ? 'active' : ''}`}
-        onClick={() => onToggle('image')}
-      >
-        이미지
-      </button>
+      {options.map((option) => (
+        <button
+          key={option}
+          className={`option ${value === option ? 'active' : ''}`}
+          onClick={() => onValueChange(option)}
+          type="button"
+        >
+          {option}
+        </button>
+      ))}
     </div>
   );
 };
