@@ -10,7 +10,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
   shape?: Shape;
   icon?: string; // 아이콘 이미지 경로
-  label?: string; // 버튼 안 텍스트
+  children?: React.ReactNode;  // 버튼 안 텍스트나 요소들
+  className?: string; // 버튼 안 텍스트
 }
 
 const Button: React.FC<ButtonProps> = ({

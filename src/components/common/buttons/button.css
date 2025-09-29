@@ -1,0 +1,222 @@
+/* 공통 버튼 스타일 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+
+/* 
+   Variant
+ */
+.primary {
+  background: #7b2ff7;
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+}
+.primary:hover {
+  background: #861DEE;
+}
+.primary:active {
+  background: #4d1fa3; 
+}
+
+.primary:focus {
+  outline: 1px solid #9b51e0; 
+}
+.primary:disabled {
+  background: #CCCCCC;
+  cursor: not-allowed;
+}
+.primary.md{
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.secondary {
+  background: #FFFFFF;
+  border: 1px solid #9935FF;
+  color: #861DEE;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+}
+.secondary:active {
+  background: #861DEE; 
+  color: #9747FF;
+  background-color: #F8F0FF;
+  
+}
+
+.secondary:focus {
+  outline: 1px solid #6E0AD1;
+  color: #9747FF;
+  background-color: #F8F0FF;
+
+}
+.secondary:hover {
+  background: #861DEE;
+  color: #9747FF;
+    background-color: #F8F0FF;
+
+}
+.secondary:disabled {
+  border: none;
+  background-color: #CCCCCC;
+  color: #FFFFFF;
+  cursor: not-allowed;
+}
+
+.outlined {
+  background: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  color: #181818;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+}
+.outlined:hover {
+  background: #F6F6F6;
+}
+.outlined:active {
+  background: #F6F6F6; 
+}
+
+.outlined:focus {
+  outline: 1px solid #F6F6F6; 
+}
+.outlined:disabled {
+  color: #FFFFFF;
+  border-color: #CCCCCC;
+  cursor: not-allowed;
+  background-color: #CCCCCC;
+}
+.outlined.md{
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+}
+.outlined.sm{
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.outlined.xs{
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.circle {
+  border-radius: 50% !important;
+  width: 56px !important;
+  height: 56px !important;
+  padding: 0;
+  background: #555555;
+  
+}
+
+.circle:hover {
+  background: #555555;
+}
+
+.circle:active {
+  background: #555555; 
+}
+
+.circle:focus {
+  outline: 1px solid #555555;
+}
+
+.circle:disabled {
+  background: #cccccc;
+}
+.trash {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 6px;
+  border: 1px solid #555555;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.trash:hover {
+  background: #F6F6F6;
+}
+.trash:active {
+  background: #F6F6F6;
+}
+.trash:focus {
+  outline: 1px solid #555555;
+}
+.trash:disabled {
+  background: #eaeaea;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* 
+   Size
+ */
+.lg {
+  width: 208px;
+  height: 56px;
+  font-size: 16px;
+}
+
+.md {
+  width: 122px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.sm {
+  width: 122px;
+  height: 36px;
+  font-size: 14px;
+}
+
+.xs {
+  width: 122px;
+  height: 28px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* 
+   Shape
+ */
+
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  padding: 0;
+}
+
+/* 
+   Icon inside button
+ */
+.btn-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+.xs .btn-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 6px;
+}
+.circle .btn-icon,
+.trash .btn-icon {
+  margin: 0;
+}
