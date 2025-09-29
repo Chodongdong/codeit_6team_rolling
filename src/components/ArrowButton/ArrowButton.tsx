@@ -1,125 +1,50 @@
-// arrow-button:component
-// 사용법 예시: <ArrowButton direction="left" onClick={handleClick} />
+/**
+ * ArrowButton 컴포넌트
+ *
+ * 원형 버튼 안에 화살표를 표시하는 공용 컴포넌트입니다.
+ * direction을 "left" 또는 "right"로 지정하여 화살표 방향을 설정할 수 있으며,
+ * size props로 버튼 크기를 조절할 수 있습니다.
+ * className과 ...props를 통해 추가 스타일링과 이벤트 처리가 가능합니다.
+ *
+ * 사용법:
+ * <ArrowButton direction="left" onClick={handleClick} size={72} />
+ * <ArrowButton style={{ "--arrow-button-size": "80px" } as React.CSSProperties} />
+ */
 
-import React from "react";
+import React, { type ComponentPropsWithoutRef } from "react";
+import "./ArrowButton.css";
+import arrowRight from "../../assets/ic/arrow_right.svg";
 
-interface ArrowButtonProps {
-  direction?: "left" | "right"; // 화살표 방향
-  onClick?: () => void; // 클릭 이벤트
+interface ArrowButtonProps extends ComponentPropsWithoutRef<"button"> {
+  direction?: "left" | "right";
+  size?: number; // 기본값 56px
 }
 
 const ArrowButton: React.FC<ArrowButtonProps> = ({
-  direction = "left",
-  onClick,
+  direction = "right",
+  size = 56,
+  className = "",
+  style,
+  ...props
 }) => {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault(); // 클릭 시 기본 동작 방지
-    if (onClick) onClick();
-  };
+  // CSS 변수로 size 적용
+  const mergedStyle: React.CSSProperties = {
+    ...style,
+    "--arrow-button-size": `${size}px`,
+  } as React.CSSProperties;
 
   return (
     <button
-      onClick={handleClick}
-      style={{
-        width: "56px",
-        height: "56px",
-        padding: 0,
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
-        position: "relative",
-      }}
+      className={`arrow-button ${className}`}
+      style={mergedStyle}
+      {...props}
     >
-      {/* 배경 원형 SVG */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="56"
-        height="56"
-        viewBox="0 0 56 56"
-        fill="none"
-        style={{ position: "absolute", top: 0, left: 0 }}
-      >
-        <foreignObject x="0" y="0" width="56" height="56">
-          <div
-            style={{
-              backdropFilter: "blur(2px)",
-              clipPath: "url(#bgblur_0_1_1383_clip_path)",
-              width: "100%",
-              height: "100%",
-            }}
-          ></div>
-        </foreignObject>
-        <g filter="url(#filter0_d_1_1383)">
-          <circle cx="28" cy="24" r="20" fill="white" fillOpacity={0.9} />
-          <circle cx="28" cy="24" r="19.5" stroke="#CCCCCC" />
-        </g>
-        <defs>
-          <filter
-            id="filter0_d_1_1383"
-            x="0"
-            y="0"
-            width="56"
-            height="56"
-            filterUnits="userSpaceOnUse"
-          >
-            <feFlood floodOpacity="0" result="BackgroundImageFix" />
-            <feColorMatrix
-              in="SourceAlpha"
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-              result="hardAlpha"
-            />
-            <feOffset dy="4" />
-            <feGaussianBlur stdDeviation="4" />
-            <feComposite in2="hardAlpha" operator="out" />
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0"
-            />
-            <feBlend
-              mode="normal"
-              in2="BackgroundImageFix"
-              result="effect1_dropShadow_1_1383"
-            />
-            <feBlend
-              mode="normal"
-              in="SourceGraphic"
-              in2="effect1_dropShadow_1_1383"
-              result="shape"
-            />
-          </filter>
-          <clipPath id="bgblur_0_1_1383_clip_path">
-            <circle cx="28" cy="24" r="20" />
-          </clipPath>
-        </defs>
-      </svg>
-
-      {/* 작은 화살표 SVG (중앙 정렬) */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform:
-            direction === "left"
-              ? "translate(-50%, -50%) rotate(180deg)"
-              : "translate(-50%, -50%)",
-          zIndex: 1,
-        }}
-      >
-        <path
-          d="M5.53846 14L12 8L5.53846 2"
-          stroke="#181818"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <div className="arrow-bg" />
+      <img
+        src={arrowRight}
+        alt="arrow"
+        className={`arrow-icon ${direction === "left" ? "rotate-180" : ""}`}
+      />
     </button>
   );
 };
