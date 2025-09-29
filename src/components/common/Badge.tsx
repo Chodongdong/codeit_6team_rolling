@@ -14,9 +14,9 @@ type BadgeProps = HTMLAttributes<HTMLDivElement> & {
   variant: BadgeVariant;
 };
 
-const Badge = ({ variant = 'other', className = '', ...props }: BadgeProps) => {
+const Badge = ({ variant = 'other', ...props }: BadgeProps) => {
   return (
-    <div {...props} className={`Badge Badge--${variant} ${className}`}>
+    <div {...props} className={`Badge Badge--${variant}`}>
       {labels[variant]}
     </div>
   );
