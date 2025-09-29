@@ -8,13 +8,5 @@
   gap: 2px;
   background-color: rgba(0, 0, 0, 0.54);
   border-radius: 32px;
-}
-
-.BadgeEmoji_emoji {
-  width: 20px;
-  height: 20px;
-}
-
-.BadgeEmoji_number {
   color: #ffffff;
 }
