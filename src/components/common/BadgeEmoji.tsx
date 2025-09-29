@@ -4,24 +4,39 @@
  * @component
  * @example
  * // 기본 사용 예시 - 상위 컴포넌트에서 props로 전달받아 출력
- * <BadgeEmoji emoji="🥳" count={14} />
+ * <BadgeEmoji emoji='party' count={5}/> // 🥳 5
+ * @example
+ * // 이모지 없이 숫자만 출력
+ * <BadgeEmoji count={10}/> // 10
  *
- * @param {string} emoji - 표시할 이모지 (문자열)
+ *
+ * @param {EmojiKey} [emoji] - 표시할 이모지의 key (예: 'party', 'love')
  * @param {number} count - 해당 이모지의 카운트 값
  * @returns {JSX.Element} 이모지와 카운트를 함께 출력하는 JSX 엘리먼트
  */
 
 import './BadgeEmoji.css';
 
+// 이모지 모음 객체(추후 추가 가능)
+const emojiMap = {
+  fourLeafClover: '🍀',
+  party: '🥳',
+  love: '😍',
+  thumbsUp: '👍',
+} as const;
+
+// emoji prop 타입: emojiMap의 key 중 하나
+type EmojiKey = keyof typeof emojiMap;
+
 interface BadgeEmojiProps {
-  emoji: string;
-  count: number;
+  emoji?: EmojiKey; // 선택적: 없으면 숫자만 출력
+  count: number; // 필수: 무조건 출력
 }
 
 const BadgeEmoji: React.FC<BadgeEmojiProps> = ({ emoji, count }) => {
   return (
     <div className="BadgeEmoji">
-      {emoji && <span>{emoji}</span>}
+      {emoji && <span>{emojiMap[emoji]}</span>}
       <span>{count}</span>
     </div>
   );
