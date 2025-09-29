@@ -1,3 +1,5 @@
+import Card from '../components/Card';
+
 type Group = {
   name: string;
   tokens: string[];
@@ -5,59 +7,17 @@ type Group = {
 };
 
 const groups: Group[] = [
-  {
-    name: 'Purple',
-    tokens: [
-      '--purple-100',
-      '--purple-200',
-      '--purple-300',
-      '--purple-400',
-      '--purple-500',
-      '--purple-600',
-      '--purple-700',
-      '--purple-800',
-      '--purple-900',
-    ],
-    borderLight: true,
-  },
-  {
-    name: 'Beige',
-    tokens: ['--beige-100', '--beige-200', '--beige-300', '--beige-400', '--beige-500'],
-    borderLight: true,
-  },
-  {
-    name: 'Blue',
-    tokens: ['--blue-100', '--blue-200', '--blue-300', '--blue-400', '--blue-500'],
-    borderLight: true,
-  },
-  {
-    name: 'Green',
-    tokens: ['--green-100', '--green-200', '--green-300', '--green-400', '--green-500'],
-    borderLight: true,
-  },
-  {
-    name: 'Grayscale',
-    tokens: [
-      '--gray-100',
-      '--gray-200',
-      '--gray-300',
-      '--gray-400',
-      '--gray-500',
-      '--gray-600',
-      '--gray-700',
-      '--gray-800',
-      '--gray-900',
-    ],
-    borderLight: true,
-  },
+  { name: 'Purple', tokens: ['--purple-100','--purple-200','--purple-300','--purple-400','--purple-500','--purple-600','--purple-700','--purple-800','--purple-900'], borderLight: true },
+  { name: 'Beige', tokens: ['--beige-100','--beige-200','--beige-300','--beige-400','--beige-500'], borderLight: true },
+  { name: 'Blue', tokens: ['--blue-100','--blue-200','--blue-300','--blue-400','--blue-500'], borderLight: true },
+  { name: 'Green', tokens: ['--green-100','--green-200','--green-300','--green-400','--green-500'], borderLight: true },
+  { name: 'Grayscale', tokens: ['--gray-100','--gray-200','--gray-300','--gray-400','--gray-500','--gray-600','--gray-700','--gray-800','--gray-900'], borderLight: true },
 ];
 
 export default function ColorGuide() {
   return (
     <div className="container">
-      <div className="section">
-        <div className="section-title">Colors</div>
-
+      <Card title="Colors">
         {groups.map((g) => (
           <div
             key={g.name}
@@ -69,7 +29,6 @@ export default function ColorGuide() {
             }}
           >
             <div className="text-muted">{g.name}</div>
-
             <div
               style={{
                 display: 'grid',
@@ -122,7 +81,7 @@ export default function ColorGuide() {
             <div style={{ height: 28, borderRadius: 6, background: 'var(--surface)', border: '1px solid var(--color-border)' }} />
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import Card from '../components/Card';
+
 export default function FontGuide() {
   const items = [
     { cls: 'f-28b', label: 'Font / 28 Bold' },
@@ -18,9 +20,7 @@ export default function FontGuide() {
 
   return (
     <div className="container">
-      <div className="section">
-        <div className="section-title">Font</div>
-
+      <Card title="Font">
         {items.map((it, idx) => (
           <div key={it.label}>
             <div className="row-2col" style={{ padding: '12px 0' }}>
@@ -30,7 +30,7 @@ export default function FontGuide() {
             {idx !== items.length - 1 && <div className="divider" />}
           </div>
         ))}
-      </div>
+      </Card>
     </div>
   );
 }
