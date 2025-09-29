@@ -12,7 +12,7 @@ function App() {
       <Badge variant="friend" />
       <Badge variant="coworker" />
       <Badge variant="family" />
-      <BadgeEmoji emoji="🥳" count={14} />
+      <BadgeEmoji emoji="party" count={14} />
       <div>
         <h3>선택된 값: {toggleValue}</h3>
         <ToggleButton value={toggleValue} onChange={setToggleValue} />{' '}
