@@ -1,22 +1,26 @@
-import { useState } from 'react';
 import './ToggleButton.css';
 
-const ToggleButton = () => {
-  const [selected, setSelected] = useState<'color' | 'image'>('color');
+type ToggleOption = 'color' | 'image';
 
+interface ToggleButtonProps {
+  value: ToggleOption;
+  onChange: (value: ToggleOption) => void;
+}
+
+const ToggleButton = ({ value, onChange }: ToggleButtonProps) => {
   return (
     <div className="ToggleButton">
-      <div className={`slider ${selected === 'color' ? 'left' : 'right'}`} />
+      <div className={`slider ${value === 'color' ? 'left' : 'right'}`} />
 
       <div
-        className={`option ${selected === 'color' ? 'active' : ''}`}
-        onClick={() => setSelected('color')}
+        className={`option ${value === 'color' ? 'active' : ''}`}
+        onClick={() => onChange('color')}
       >
         컬러
       </div>
       <div
-        className={`option ${selected === 'image' ? 'active' : ''}`}
-        onClick={() => setSelected('image')}
+        className={`option ${value === 'image' ? 'active' : ''}`}
+        onClick={() => onChange('image')}
       >
         이미지
       </div>
