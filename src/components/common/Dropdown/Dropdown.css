@@ -8,35 +8,31 @@
   border-radius: 8px;
 }
 
-/* variant별 스타일 */
+/* inactive */
 .dropdown-inactive {
   border: 1px solid var(--gray-300, #ccc);
 }
 
-.dropdown-focused {
-  border: 2px solid var(--gray-500, #555);
-}
-
+/* focused & actived (겹치는 부분 묶음) */
+.dropdown:focus,
 .dropdown-actived {
   border: 2px solid var(--gray-500, #555);
 }
 
+/* hover */
 .dropdown:hover {
   border: 1px solid var(--gray-500, #555);
 }
 
-.dropdown-disabled {
+/* disabled & disabled:hover (겹치는 부분 묶음) */
+.dropdown-disabled,
+.dropdown-disabled:hover {
   border: 1px solid var(--gray-300, #ccc);
   background: var(--gray-100, #f6f6f6);
   cursor: not-allowed;
 }
 
-.dropdown-disabled:hover {
-  border: 1px solid var(--gray-300, #ccc); /* 원래 border 유지 */
-  background: var(--gray-100, #f6f6f6); /* hover 시에도 배경 유지 */
-  cursor: not-allowed; /* 마우스 커서도 그대로 */
-}
-
+/* error */
 .dropdown-error {
   border: 1px solid var(--Error, #dc3a3a);
 }
@@ -48,7 +44,6 @@
   align-items: center;
   gap: 4px;
   color: var(--Error, #dc3a3a);
-  /* Font/12 Regular */
   font-family: Pretendard;
   font-size: 12px;
   font-style: normal;
@@ -76,6 +71,7 @@
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
 }
 
+/* 옵션 항목 */
 .dropdown-item {
   display: flex;
   width: 316px;
