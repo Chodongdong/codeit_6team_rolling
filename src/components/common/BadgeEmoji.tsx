@@ -16,15 +16,15 @@
  * @returns {JSX.Element} 이모지와 카운트를 함께 출력하는 JSX 엘리먼트
  */
 
-import React from 'react';
-import './BadgeEmoji.css';
+import React from "react";
+import "./BadgeEmoji.css";
 
 // 이모지 모음 객체(추후 추가 가능)
 const emojiMap = {
-  fourLeafClover: '🍀',
-  party: '🥳',
-  love: '😍',
-  thumbsUp: '👍',
+  fourLeafClover: "🍀",
+  party: "🥳",
+  love: "😍",
+  thumbsUp: "👍",
 } as const;
 
 // emoji prop 타입: emojiMap의 key 중 하나
@@ -47,6 +47,6 @@ const BadgeEmoji = React.forwardRef<HTMLButtonElement, BadgeEmojiProps>(
   }
 );
 
-BadgeEmoji.displayName = 'BadgeEmoji'; //디버깅 위해 작성한 코드(없어도 동작함)
+BadgeEmoji.displayName = "BadgeEmoji"; //디버깅 위해 작성한 코드(없어도 동작함)
 
 export default BadgeEmoji;

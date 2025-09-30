@@ -27,12 +27,12 @@
  * @returns {JSX.Element} 토글 버튼 UI
  */
 
-import './ToggleButton.css';
-import type { ComponentPropsWithoutRef } from 'react';
+import "./ToggleButton.css";
+import type { ComponentPropsWithoutRef } from "react";
 
 type ToggleOption = string;
 
-interface ToggleButtonProps extends ComponentPropsWithoutRef<'div'> {
+interface ToggleButtonProps extends ComponentPropsWithoutRef<"div"> {
   options: [ToggleOption, ToggleOption]; // 토글 두 개의 값만 받도록 제한
   value: ToggleOption;
   onValueChange: (value: ToggleOption) => void;
@@ -46,13 +46,13 @@ const ToggleButton = ({
   ...rest
 }: ToggleButtonProps) => {
   return (
-    <div className={`ToggleButton ${className ?? ''}`} {...rest}>
-      <div className={`slider ${value === options[0] ? 'left' : 'right'}`} />
+    <div className={`ToggleButton ${className ?? ""}`} {...rest}>
+      <div className={`slider ${value === options[0] ? "left" : "right"}`} />
 
       {options.map((option) => (
         <button
           key={option}
-          className={`option ${value === option ? 'active' : ''}`}
+          className={`option ${value === option ? "active" : ""}`}
           onClick={() => onValueChange(option)}
           type="button"
         >
