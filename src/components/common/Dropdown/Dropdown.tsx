@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import type { ButtonHTMLAttributes } from "react";
 import "./Dropdown.css";
 
-import { arrowRight, arrowTop } from "../../assets";
+import { arrowRight, arrowTop } from "../../../assets";
 
 type DropdownState = "inactive" | "focused" | "actived" | "disabled" | "error";
 
