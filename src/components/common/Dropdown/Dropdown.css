@@ -1,0 +1,85 @@
+/* 공통 기본 스타일 */
+.dropdown {
+  display: flex;
+  width: 320px;
+  padding: 12px 16px;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+}
+
+/* inactive */
+.dropdown-inactive {
+  border: 1px solid var(--gray-300, #ccc);
+}
+
+/* focused & actived (겹치는 부분 묶음) */
+.dropdown:focus,
+.dropdown-actived {
+  border: 2px solid var(--gray-500, #555);
+}
+
+/* hover */
+.dropdown:hover {
+  border: 1px solid var(--gray-500, #555);
+}
+
+/* disabled & disabled:hover (겹치는 부분 묶음) */
+.dropdown-disabled,
+.dropdown-disabled:hover {
+  border: 1px solid var(--gray-300, #ccc);
+  background: var(--gray-100, #f6f6f6);
+  cursor: not-allowed;
+}
+
+/* error */
+.dropdown-error {
+  border: 1px solid var(--Error, #dc3a3a);
+}
+
+/* 에러 메시지 */
+.dropdown-error-text {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--Error, #dc3a3a);
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 150% */
+  letter-spacing: -0.06px;
+}
+
+/* 화살표 (이미지용) */
+.arrow {
+  width: 16px; /* 아이콘 크기 통일 */
+  height: 16px;
+}
+
+/* 옵션 리스트 */
+.dropdown-list {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 10px 1px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 8px;
+  border: 1px solid var(--gray-300, #ccc);
+  background: var(--white, #fff);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* 옵션 항목 */
+.dropdown-item {
+  display: flex;
+  width: 316px;
+  padding: 12px 16px;
+  align-items: center;
+  gap: 10px;
+}
+
+.dropdown-item:hover {
+  background: var(--gray-100, #f6f6f6);
+}
