@@ -17,14 +17,14 @@
  * @returns {JSX.Element} 선택한 variant에 맞는 라벨을 표시하는 div
  */
 
-import type { HTMLAttributes } from 'react';
-import './Badge.css';
+import type { HTMLAttributes } from "react";
+import "./Badge.css";
 
 const labels = {
-  other: '지인',
-  friend: '친구',
-  coworker: '동료',
-  family: '가족',
+  other: "지인",
+  friend: "친구",
+  coworker: "동료",
+  family: "가족",
 } as const;
 
 type BadgeVariant = keyof typeof labels;
@@ -33,7 +33,7 @@ type BadgeProps = HTMLAttributes<HTMLDivElement> & {
   variant: BadgeVariant;
 };
 
-const Badge = ({ variant = 'other', ...props }: BadgeProps) => {
+const Badge = ({ variant = "other", ...props }: BadgeProps) => {
   return (
     <div {...props} className={`Badge Badge--${variant}`}>
       {labels[variant]}
