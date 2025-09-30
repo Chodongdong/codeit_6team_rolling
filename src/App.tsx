@@ -1,7 +1,8 @@
-import "./App.css";
+import React from "react";
+import MainPage from "./pages/MainPage";
 
-function App() {
-  return <></>;
-}
+const App: React.FC = () => {
+  return <MainPage />; // MainPage 렌더링
+};
 
 export default App;
