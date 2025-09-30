@@ -1,4 +1,4 @@
-/* 공통 속성 */
+/* 공통 인풋 박스 스타일 */
 .input-box {
   display: flex;
   width: 320px;
@@ -8,46 +8,48 @@
   border-radius: 8px;
   background: var(--white, #fff);
   outline: none;
-}
-
-/* Inactive */
-.inactive {
   border: 1px solid var(--gray-300, #ccc);
+  box-sizing: border-box;
+  font-size: 14px;
 }
 
-/* Active */
-.active {
-  border: 2px solid var(--gray-700, #3a3a3a);
+/* Focus 상태 */
+.input-box:focus:not(:disabled) {
+  border: 2px solid var(--gray-500, #555);
+  background: var(--white, #fff);
 }
 
-/* Hover  */
-.inactive:hover,
-.active:hover {
+/* Hover 상태 */
+.input-box:hover:not(:disabled) {
   border: 1px solid var(--gray-500, #555);
-  flex-shrink: 0;
-  align-self: stretch;
-  background: #fff;
+  background: var(--white, #fff);
 }
 
-/* Disabled */
-.disabled {
+/* Disabled 상태 */
+.input-box:disabled {
+  cursor: not-allowed;
   border: 1px solid var(--gray-300, #ccc);
   background: var(--gray-100, #f6f6f6);
 }
 
-/* Error*/
-.error {
-  border-radius: 8px;
+/* Error 상태 */
+.input-box.error {
   border: 1px solid var(--Error, #dc3a3a);
   background: var(--white, #fff);
+}
+/* Error + Hover / Focus 상태 (테두리 유지) */
+.input-box.error:hover,
+.input-box.error:focus {
+  border: 1px solid var(--Error, #dc3a3a);
 }
 
 /* 에러 메시지 텍스트 */
 .error-text {
-  color: var(--Error, #dc3a3a);
+  font-family: Pretendard;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
   letter-spacing: -0.06px;
+  color: var(--Error, #dc3a3a);
 }

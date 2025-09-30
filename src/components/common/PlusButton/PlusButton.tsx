@@ -1,48 +1,32 @@
+import React, { type ComponentPropsWithoutRef } from "react";
+import plusIcon from "../../../assets/plus.svg";
 import "./PlusButton.css";
-import React, { type ComponentPropsWithoutRef, useState } from "react";
-import plusIcon from "../../assets/ic/plus.svg";
 
+/**
+ * PlusButton 컴포넌트
+ *
+ * 원형 플러스 버튼을 표시하는 공용 컴포넌트입니다.
+ * 사용법 예시:
+ * <PlusButton className="custom" onClick={handleClick} />
+ */
 interface PlusButtonProps extends ComponentPropsWithoutRef<"button"> {
-  size?: number; // 기본값 56px
+  size?: number; // 버튼 크기, 기본값 56px
 }
 
 const PlusButton: React.FC<PlusButtonProps> = ({
   size = 56,
   className = "",
-  style,
   ...props
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
-
-  // CSS 변수로 size 적용
+  // CSS 변수로 버튼 크기 적용
   const mergedStyle: React.CSSProperties = {
-    ...style,
     "--plus-button-size": `${size}px`,
   } as React.CSSProperties;
 
-  const disabled = props.disabled;
-
   return (
     <button
-      className={`plus-button 
-        ${isHovered ? "hover" : ""} 
-        ${isPressed ? "pressed" : ""} 
-        ${isFocused ? "focus" : ""} 
-        ${disabled ? "disabled" : ""} 
-        ${className}`}
+      className={["plus-button", className].filter(Boolean).join(" ")}
       style={mergedStyle}
-      disabled={disabled}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setIsPressed(false);
-      }}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
       {...props}
     >
       <div className="plus-bg" />
