@@ -1,8 +1,12 @@
-import React from "react";
-import MainPage from "./pages/MainPage";
+import "./App.css";
+import Header from "./components/common/Header/Header";
 
-const App: React.FC = () => {
-  return <MainPage />; // MainPage 렌더링
+const App = () => {
+  return (
+    <>
+      <Header />
+    </>
+  );
 };
 
 export default App;
