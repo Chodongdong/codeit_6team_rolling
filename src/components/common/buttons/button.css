@@ -168,25 +168,29 @@
    Size
  */
 .lg {
-  width: 208px;
+  min-width:208px;
+  
   height: 56px;
   font-size: 16px;
 }
 
 .md {
-  width: 122px;
+  min-width:122px;
+  
   height: 40px;
   font-size: 14px;
 }
 
 .sm {
-  width: 122px;
+  min-width:122px;
+  
   height: 36px;
   font-size: 14px;
 }
 
 .xs {
-  width: 122px;
+  min-width:122px;
+  
   height: 28px;
   font-size: 14px;
   font-weight: 400;
