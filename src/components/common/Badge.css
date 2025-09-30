@@ -1,12 +1,6 @@
 /* 색상 코드, 폰트 관련(크기, 굵기 등) 수정예정 */
 
 .Badge {
-  /* 기본 설정 none으로 안보이게 처리*/
-  display: none;
-}
-
-.Badge.is-selected {
-  /* 사용자가 선택한 Badge만 뜨도록 설정 */
   display: block;
   width: 41px;
   height: 20px;
