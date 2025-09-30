@@ -1,0 +1,32 @@
+/* 색상 코드, 폰트 관련(크기, 굵기 등) 수정예정 */
+
+.Badge {
+  display: block;
+  width: 41px;
+  height: 20px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.Badge--other {
+  background-color: #fff0d6;
+  color: #ff8832;
+}
+
+.Badge--friend {
+  background-color: #e2f5ff;
+  color: #00a2fe;
+}
+
+.Badge--coworker {
+  background-color: #f8f0ff;
+  color: #9935ff;
+}
+
+.Badge--family {
+  background-color: #e4fbdc;
+  color: #2ba600;
+}

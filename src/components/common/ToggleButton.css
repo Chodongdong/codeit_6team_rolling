@@ -1,0 +1,52 @@
+.ToggleButton {
+  position: relative;
+  width: 244px;
+  height: 40px;
+  border-radius: 6px;
+  display: flex;
+  background-color: #f6f6f6;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 슬라이딩 배경 */
+.slider {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  border-radius: 6px;
+  background-color: white;
+  border: 2px solid #9935ff;
+  transition: transform 0.3s ease;
+  z-index: 0; /* 옵션 글자보다 뒤에 */
+}
+
+.slider.left {
+  transform: translateX(0%);
+}
+
+.slider.right {
+  transform: translateX(100%);
+}
+
+/* 버튼(각 옵션) 텍스트 */
+.option {
+  all: unset;
+
+  width: 50%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 400;
+  color: #181818;
+  z-index: 1; /* slider 위에 표시 */
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.option.active {
+  color: #861dee;
+  font-weight: 700;
+}
