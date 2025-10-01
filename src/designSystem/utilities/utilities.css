@@ -1,0 +1,59 @@
+@import '../tokens/index.css';
+
+/* 텍스트 컬러 */
+.text-muted { color: var(--color-text-muted); }
+
+/* 폰트 사이즈 */
+.text-12 { font-size: var(--fs-12); }
+.text-14 { font-size: var(--fs-14); }
+.text-15 { font-size: var(--fs-15); }
+.text-16 { font-size: var(--fs-16); }
+.text-18 { font-size: var(--fs-18); }
+.text-20 { font-size: var(--fs-20); }
+.text-24 { font-size: var(--fs-24); }
+.text-28 { font-size: var(--fs-28); }
+.text-32 { font-size: var(--fs-32); }
+
+/* 폰트 굵기 */
+.weight-regular { font-weight: var(--fw-regular); }
+.weight-bold    { font-weight: var(--fw-bold); }
+
+/* 시안 조합 단축 */
+.f-28b { font-size: var(--fs-28); font-weight: var(--fw-bold); }
+.f-24b { font-size: var(--fs-24); font-weight: var(--fw-bold); }
+.f-24r { font-size: var(--fs-24); font-weight: var(--fw-regular); }
+.f-20b { font-size: var(--fs-20); font-weight: var(--fw-bold); }
+.f-20r { font-size: var(--fs-20); font-weight: var(--fw-regular); }
+.f-18b { font-size: var(--fs-18); font-weight: var(--fw-bold); }
+.f-18r { font-size: var(--fs-18); font-weight: var(--fw-regular); }
+.f-16b { font-size: var(--fs-16); font-weight: var(--fw-bold); }
+.f-16r { font-size: var(--fs-16); font-weight: var(--fw-regular); }
+.f-15b { font-size: var(--fs-15); font-weight: var(--fw-bold); }
+.f-15r { font-size: var(--fs-15); font-weight: var(--fw-regular); }
+.f-14b { font-size: var(--fs-14); font-weight: var(--fw-bold); }
+.f-14r { font-size: var(--fs-14); font-weight: var(--fw-regular); }
+.f-12r { font-size: var(--fs-12); font-weight: var(--fw-regular); }
+
+/* 카드/레이아웃 */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: var(--space-6);
+}
+
+.row-2col {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+@media (max-width: 480px) {
+  .row-2col { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* 배경/텍스트 유틸(필요 시 확장) */
+.bg-purple-600 { background: var(--purple-600); }
+.text-purple-600 { color: var(--purple-600); }
+.bg-error { background: var(--error); }
+.bg-surface { background: var(--surface); }
