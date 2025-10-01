@@ -13,7 +13,7 @@
 import React, { useState } from "react";
 import "./Dropdown.css";
 
-import { arrowRight, arrowTop } from "../../../assets";
+import { arrowRight, arrowTop } from "../../../../assets";
 
 type DropdownState = "inactive" | "actived" | "disabled" | "error";
 
