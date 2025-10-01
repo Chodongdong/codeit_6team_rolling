@@ -92,10 +92,16 @@ const Header = ({
                 variant="outlined"
                 size="md"
                 shape="icon"
+                icon="assets/smile.png"
                 children="추가"
               />
               <div className="service__divider">|</div>
-              <Button variant="outlined" size="md" shape="icon" />
+              <Button
+                variant="outlined"
+                size="md"
+                shape="icon"
+                icon="assets/share.svg"
+              />
             </div>
           </div>
         </div>
