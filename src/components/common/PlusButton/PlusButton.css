@@ -1,9 +1,8 @@
 .plus-button {
-  /* 버튼 크기 CSS 변수 적용 (기본 56px) */
-  border-radius: 100px;
   --plus-button-size: 56px;
   width: var(--plus-button-size);
   height: var(--plus-button-size);
+  border-radius: 100px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -24,28 +23,28 @@
 
 .plus-icon {
   position: relative;
-  /* 아이콘 크기 버튼 크기에 비례 */
   width: calc(var(--plus-button-size) / 2.3);
   height: calc(var(--plus-button-size) / 2.3);
 }
 
 /* Hover 상태 */
-.plus-button.hover:not(.disabled) .plus-bg {
+.plus-button:hover:not(.disabled) .plus-bg {
   background: var(--gray-600, #4a4a4a);
 }
 
 /* Pressed 상태 */
-.plus-button.pressed:not(.disabled) .plus-bg {
+.plus-button:active:not(.disabled) .plus-bg {
   background: var(--gray-700, #3a3a3a);
 }
 
 /* Focus 상태 */
-.plus-button.focus:not(.disabled) {
+.plus-button:focus:not(.disabled) {
   border: 1px solid var(--gray-800, #2b2b2b);
   background: var(--gray-700, #3a3a3a);
 }
 
 /* Disabled 상태 */
+.plus-button:disabled .plus-bg,
 .plus-button.disabled .plus-bg {
   background: var(--gray-300, #aaa);
   cursor: not-allowed;
