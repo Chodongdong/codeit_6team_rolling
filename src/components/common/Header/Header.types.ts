@@ -1,4 +1,4 @@
-import emojiMap from "../BadgeEmoji/BadgeEmoji";
+import type { EmojiKey } from "../BadgeEmoji/BadgeEmoji";
 
 // 작성자 아바타 정보(임시) - 추후 API 응답 모델과 맞출 예정
 export interface Avatar {
@@ -8,7 +8,7 @@ export interface Avatar {
 }
 
 // 리액션 카운트(임시) - 추후 API 응답 모델과 맞출 예정
-export type EmojiKey = keyof typeof emojiMap; // BadgeEmoji.tsx에서 emojiMap 추출
+// BadgeEmoji.tsx에서 emojiMap 추출
 export interface Reaction {
   id: string; // reaction 고유 id
   type: EmojiKey; // emojiMap key와 매칭 ("thumbsUp" | "love" ...)

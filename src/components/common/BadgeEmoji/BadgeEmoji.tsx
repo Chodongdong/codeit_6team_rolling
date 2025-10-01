@@ -28,7 +28,7 @@ const emojiMap = {
 } as const;
 
 // emoji prop 타입: emojiMap의 key 중 하나
-type EmojiKey = keyof typeof emojiMap;
+export type EmojiKey = keyof typeof emojiMap;
 
 interface BadgeEmojiProps extends ComponentPropsWithRef<"button"> {
   emoji?: EmojiKey; // 선택적: 없으면 숫자만 출력
