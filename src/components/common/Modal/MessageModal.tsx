@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import Badge from "../Badge/Badge";
 import Button from "../buttons/button";
 import "./MessageModal.css";
@@ -17,7 +17,8 @@ interface MessageModalProps {
   defaultMessage?: string;
 }
 
-const MessageModal: React.FC<MessageModalProps> = ({
+// React.FC 사용 안 하고 작성
+function MessageModal({
   isOpen = false,
   onClose = () => {},
   profileImg = "../../../assets/profile.png",
@@ -25,8 +26,9 @@ const MessageModal: React.FC<MessageModalProps> = ({
   relation = "coworker",
   date = "2025.01.01",
   defaultMessage = "",
-}) => {
+}: MessageModalProps) {
   const [message, setMessage] = useState(defaultMessage);
+
 
   // 모달 열렸을 때 스크롤 막기
   useEffect(() => {
@@ -59,7 +61,6 @@ const MessageModal: React.FC<MessageModalProps> = ({
           </div>
           <span className="date">{date}</span>
         </div>
-        <div className="line" />
         <div className="modal-body">
           <textarea
             value={message}

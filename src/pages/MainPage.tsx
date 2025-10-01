@@ -18,7 +18,7 @@ const App: React.FC = () => {
         <ArrowButton direction="right" onClick={handleRightClick} />
       </div>
       <PlusButton />
-      <MessageModal isOpen={true} />
+      <MessageModal />
     </div>
   );
 };
