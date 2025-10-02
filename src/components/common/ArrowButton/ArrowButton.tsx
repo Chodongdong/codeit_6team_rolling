@@ -1,7 +1,6 @@
 import React, { type ComponentPropsWithoutRef } from "react";
 import "./ArrowButton.css";
-import arrowRight from "../../../assets/arrow_button.svg";
-
+import { arrowIcon } from "../../../assets";
 
 /**
  * ArrowButton 컴포넌트
@@ -41,7 +40,7 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({
       <div className="arrow-bg" />
       {/* 화살표 아이콘 */}
       <img
-        src={arrowRight}
+        src={arrowIcon}
         alt="arrow"
         className={`arrow-icon ${direction === "left" ? "rotate-180" : ""}`}
       />
