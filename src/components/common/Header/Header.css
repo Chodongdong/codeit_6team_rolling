@@ -1,0 +1,121 @@
+/* 폰트 및 색상 관련 코드 변수로 수정 예정 */
+
+.Header {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.Header .main {
+  height: 65px;
+  border-bottom: 1px solid #eeeeee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Header .service {
+  height: 65px;
+  border-bottom: 1px solid #eeeeee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service__recipient {
+  font-weight: 700;
+  font-size: 28px;
+  color: #2b2b2b;
+}
+
+.service__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.service__avatars {
+  display: flex;
+  align-items: center;
+}
+
+.service__avatars img {
+  width: 28px;
+  width: 28px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-left: -8px; /*겹치게*/
+}
+
+.service__count {
+  font-weight: 700;
+  font-size: 18px;
+  color: #181818;
+}
+
+.service__count span {
+  font-weight: 400;
+}
+
+.service__divider {
+  color: #eeeeee;
+}
+
+.service__reactions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service__reaction-arrow {
+  width: 12px;
+  height: 12px;
+}
+
+.service__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.share-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.popover {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  margin-top: 6px;
+}
+
+.popover--reactions {
+  display: flex;
+  gap: 8px;
+  padding: 24px;
+}
+
+.popover--share {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.popover__item {
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.popover__item:hover {
+  background-color: #f5f5f5;
+}
