@@ -31,15 +31,15 @@ const emojiMap = {
 export type EmojiKey = keyof typeof emojiMap;
 
 interface BadgeEmojiProps extends ComponentPropsWithRef<"button"> {
-  emoji?: EmojiKey; // 선택적: 없으면 숫자만 출력
-  count: number; // 필수: 무조건 출력
+  emoji?: EmojiKey; // 없으면 숫자만 출력
+  count?: number; //
 }
 
 const BadgeEmoji = ({ emoji, count, ...props }: BadgeEmojiProps) => {
   return (
     <button className="BadgeEmoji" {...props}>
       {emoji && <span>{emojiMap[emoji]}</span>}
-      <span>{count}</span>
+      {count ? <span>{count}</span> : null}
     </button>
   );
 };
