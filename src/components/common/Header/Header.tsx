@@ -31,6 +31,7 @@ import Button from "../buttons/button";
 import BadgeEmoji from "../BadgeEmoji/BadgeEmoji";
 
 import type { HeaderProps } from "./Header.types";
+import ProfileImage from "../Option/ProfileImage";
 
 const Header = ({
   showCreateButton = false,
@@ -59,10 +60,10 @@ const Header = ({
           <div className="service__recipient">To. {recipient}</div>
           <div className="service__meta">
             <div className="service__avatars">
-              {avatars.slice(0, 3).map((a) => (
-                <img key={a.id} src={a.src} alt={a.alt ?? "avatar"} />
+              {avatars?.slice(0, 3).map((a) => (
+                <ProfileImage key={a.id} src={a.src} alt={a.alt ?? "avatar"} size={32}/>
               ))}
-              {avatars.length > 3 && (
+              {avatars && avatars.length > 3 && (
                 <span className="service__avatar-extra">
                   +{avatars.length - 3}
                 </span>
