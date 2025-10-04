@@ -3,6 +3,7 @@ import Input from "../components/common/Input/Input";
 import ArrowButton from "../components/common/ArrowButton/ArrowButton"; // default export
 import PlusButton from "../components/common/PlusButton/PlusButton";
 import MessageModal from "../components/common/Modal/MessageModal";
+import ExamplePage from "../components/ExamplePage/ExamplePage";
 
 const App: React.FC = () => {
   const handleLeftClick = () => console.log("왼쪽 버튼 클릭");
@@ -18,7 +19,8 @@ const App: React.FC = () => {
         <ArrowButton direction="right" onClick={handleRightClick} />
       </div>
       <PlusButton />
-      <MessageModal isOpen={true} />
+      <MessageModal />
+      <ExamplePage />
     </div>
   );
 };
