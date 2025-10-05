@@ -1,5 +1,5 @@
 import React, { type ComponentPropsWithoutRef } from "react";
-import plusIcon from "../../../assets/plus.png";
+import plusIcon from "../../../assets/plus.svg";
 import "./PlusButton.css";
 
 /**

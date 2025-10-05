@@ -1,20 +1,20 @@
-/*
-*<CardList /> 이렇게 사용하면 됨
-*지금은 한 번에 6개가 적용되는 식이라 tsx에서 하나만 남기고 card단위로 사용하면 될 듯 합니다
-*
-*      
-*   
-*/
-
+/* 카드 전체 영역 */
 .card-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction:row;
   gap: 20px;
+  justify-content: start;
+  padding: 20px;
+  overflow-x: auto; /* 가로 스크롤 허용 */
+  scroll-snap-type: x mandatory;
 }
 
+/* 카드 단위 */
 .card {
-  width: 275px;
-  height: 260px;
+  width: 100%;
+  aspect-ratio: 275 / 260; /* 카드 비율 유지  */
+  max-width: 275px; /* 데스크탑 최대 크기 */
+  min-width: 208px; /* 모바일 최소 크기 */
   border-radius: 12px;
   padding: 16px;
   box-sizing: border-box;
@@ -23,76 +23,104 @@
   justify-content: space-between;
   background-size: cover;
   background-position: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 
+/* Hover 효과 */
+.card:hover {
+  cursor: pointer;
+}
+
+/* 제목 */
 .card-title {
-  font-size:24px;
-  line-height: 36px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 4px;
-}
-.card-subtitle {
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 26px;
-  margin-bottom: 8px; 
-}
-.card-countText{
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 26px;
+  margin-bottom: 6px;
 }
 
+/* 부제 */
+.card-subtitle {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* 프로필 영역 */
 .profile-list {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  gap: 4px;
+  padding-left: 20px;
+
 }
 
 .profile-img {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  margin-right: -8px;
   border: 2px solid #fff;
+  background:#fff;
+  margin-left: -20px; 
 }
 
 .profile-extra {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
   font-size: 12px;
   font-weight: bold;
-  background: #fff;
-  border-radius: 50%;
-  padding: 4px 6px;
-  margin-left: 4px;
-}
-
-.card-subtitle {
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.reaction-list {
-  display: flex;
-  gap: 8px;
-}
-
-.reaction-box {
-  width: 65px;
-  height: 36px;
-  border-radius: 18px;
-  background: #0000008A;
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  margin-left: -20px;
 }
 
-.reaction-icon {
-  width: 20px;
-  height: 20px;
-}
+/* 구분선 */
 .divider {
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #ddd;
   margin: 8px 0;
+}
+
+/* 리액션 리스트 */
+.reaction-list {
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  gap: 12px; /* 아이템 간격 */
+  margin-top: 8px;
+}
+.reaction-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* 아이콘과 숫자 사이 간격 */
+  padding: 6px 12px;
+  border-radius: 18px;
+  background: #5c5c5c; /* 회색 배경 */
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 60px; /* 최소 박스 크기 일정하게 */
+}
+
+/* 반응형 대응 */
+@media (max-width: 768px) {
+  .card-container {
+    gap: 16px;
+  }
+
+  .card {
+    max-width: 100%;
+    padding: 14px;
+  }
+
+  .card-title {
+    font-size: 18px;
+  }
+
+  .profile-img {
+    width: 26px;
+    height: 26px;
+  }
 }
