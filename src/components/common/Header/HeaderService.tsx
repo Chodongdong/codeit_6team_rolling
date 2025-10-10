@@ -4,6 +4,7 @@ import BadgeEmoji from "../BadgeEmoji/BadgeEmoji";
 import Button from "../buttons/button";
 import ProfileImage from "../Option/ProfileImage";
 import type { HeaderProps } from "./Header.types";
+import { shareIcon } from "../../../assets/index";
 
 const HeaderService = ({
   recipient = "수취인",
@@ -33,12 +34,10 @@ const HeaderService = ({
           )}
         </div>
 
-        <div className="service__count">
+        <div className="service__count service__segment">
           {totalWriters}
           <span>명이 작성했어요!</span>
         </div>
-
-        <div className="service__divider">|</div>
 
         <div className="service__reactions">
           {reactions.slice(0, 3).map((r, i) => (
@@ -62,22 +61,21 @@ const HeaderService = ({
           )}
         </div>
 
-        <div className="service__actions">
+        <div className="service__actions service__segment">
           <Button
             variant="outlined"
             size="md"
             shape="icon"
-            icon="assets/smile.png"
+            icon="src/assets/smile.png"
             children="추가"
           />
-          <div className="service__divider">|</div>
 
           <div className="share-wrapper">
             <Button
               variant="outlined"
               size="md"
               shape="icon"
-              icon="assets/share.svg"
+              icon={shareIcon}
               onClick={() => setShowShare((prev) => !prev)}
             />
             {showShare && (
