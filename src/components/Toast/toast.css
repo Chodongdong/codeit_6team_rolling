@@ -1,0 +1,83 @@
+
+/* 하단 중앙 컨테이너 */
+.toast-wrap.bottom-center {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+/* 카드: 데스크톱/태블릿 기본 524x64 */
+.toast {
+  width: 524px;
+  height: 64px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #000000CC;
+  color: #fff;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  border: none;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: toast-in 160ms ease-out forwards;
+}
+
+/* 상태 클래스 보더 제거 보증 */
+.toast--success,
+.toast--error,
+.toast--info,
+.toast--warning {
+  border: none;
+}
+
+/* 아이콘: 24x24 고정 */
+.toast__icon {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.toast__icon img,
+.toast__close img {
+  display: block; width: 24px; height: 24px;
+}
+
+/* 메시지 */
+.toast__message {
+  font-size: 14px;
+  line-height: 1.45;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 닫기 버튼 */
+.toast__close {
+  border: none; background: transparent;
+  cursor: pointer; padding: 4px; line-height: 0;
+}
+.toast__close:hover { color: #fff; }
+
+/* 등장 모션 */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 모바일: 320x64 */
+@media (max-width: 599px) {
+  .toast {
+    width: 320px;
+    height: 64px;
+    padding: 0 12px;
+  }
+  .toast__message { font-size: 13px; }
+}
