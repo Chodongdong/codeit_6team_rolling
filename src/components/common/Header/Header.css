@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-.Header .main {
+.main {
   height: 65px;
   border-bottom: 1px solid #eeeeee;
   display: flex;
@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-.Header .service {
+.service {
   height: 65px;
   border-bottom: 1px solid #eeeeee;
   display: flex;
