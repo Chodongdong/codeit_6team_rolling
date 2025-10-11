@@ -38,13 +38,22 @@ body {
 @media (max-width: 768px) {
   .card-grid {
     grid-template-columns: repeat(2, 1fr);
-    padding: 93px, 24px, 91px, 24px;
+    padding: 93px 24px 91px 24px;
   }
 }
 /* 모바일*/
 @media (max-width: 360px) {
   .card-grid {
     grid-template-columns: 1fr;
-    padding: 32px, 20px, 38px, 20px;
+    padding: 32px 20px 38px 20px;
   }
+}
+.delete-button-wrapper {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  justify-content: center; /* 가운데 정렬 */
+  margin: 24px 0;
 }
