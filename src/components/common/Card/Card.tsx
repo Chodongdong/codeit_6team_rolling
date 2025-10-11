@@ -4,7 +4,7 @@ import Badge from "../Badge/Badge";
 import "./Card.css";
 import PlusButton from "../PlusButton/PlusButton";
 
-import trashIcon from "../../../../assets/trash.png";
+import trashIcon from "../../../assets/trash.png";
 
 type CardProps = {
   type: "normal" | "edit" | "plus";
@@ -15,6 +15,7 @@ type CardProps = {
   badge?: "other" | "friend" | "coworker" | "family";
   onDelete?: () => void;
   onAdd?: () => void;
+  onClick?: () => void;
 };
 
 function Card({
@@ -26,17 +27,18 @@ function Card({
   badge = "other",
   onDelete,
   onAdd,
+  onClick,
 }: CardProps) {
-if (type === "plus") {
-  return (
-    <div className="card plus-card">
-      <PlusButton onClick={onAdd} size={56} /> 
-    </div>
-  );
+  if (type === "plus") {
+    return (
+      <div className="card plus-card">
+        <PlusButton onClick={onAdd} size={56} />
+      </div>
+    );
   }
 
   return (
-    <div className="card">
+    <div className="card" onClick={onClick}>
       <div className="card-header">
         {/* 아바타 + 작성자/뱃지 묶음 */}
         <div className="card-user">

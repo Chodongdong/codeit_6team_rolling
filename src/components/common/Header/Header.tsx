@@ -29,11 +29,9 @@
 import "./Header.css";
 import Button from "../buttons/button";
 import BadgeEmoji from "../BadgeEmoji/BadgeEmoji";
-
 import type { HeaderProps } from "./Header.types";
 import ProfileImage from "../Option/ProfileImage";
 import { useState } from "react";
-
 const Header = ({
   showCreateButton = false,
   showServiceMeta = false,
