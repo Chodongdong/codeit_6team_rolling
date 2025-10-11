@@ -1,7 +1,7 @@
 /* 공통 인풋 박스 스타일 */
 .input-box {
   display: flex;
-  width: 320px;
+  max-width: 100%;
   padding: 12px 16px;
   align-items: center;
   gap: 10px;
