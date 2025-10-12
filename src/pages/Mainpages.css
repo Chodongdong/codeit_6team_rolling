@@ -7,7 +7,6 @@ body {
 :root {
   --content-side-padding: clamp(24px, calc((100vw - 1200px) / 2), 120px);
 }
-
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

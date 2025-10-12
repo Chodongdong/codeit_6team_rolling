@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
-import MessageModal from "../components/common/Modal/MessageModal"; // 수정된 모달
 import "./MainPages.css";
+import "./Edit.css";
 
 // 카드 데이터 타입
 interface CardData {
@@ -67,14 +67,14 @@ interface MainPagesProps {
   initialBgColor?: string;
 }
 
-const MainPages: React.FC<MainPagesProps> = ({
-  initialBgColor = "#FFE2AD",
-}) => {
+const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
   const [cards, setCards] = useState(allCards.slice(0, 6));
   const [hasMore, setHasMore] = useState(true);
   const [bgColor] = useState(initialBgColor);
-  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleDelete = (id: number) => {
+    setCards((prevCards) => prevCards.filter((card) => card.id !== id));
+  };
 
   const fetchMoreCards = () => {
     const nextIndex = cards.length;
@@ -86,11 +86,6 @@ const MainPages: React.FC<MainPagesProps> = ({
     setCards([...cards, ...moreCards]);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedCard(null);
-  };
-
   return (
     <div
       className="mainpages-container"
@@ -100,7 +95,6 @@ const MainPages: React.FC<MainPagesProps> = ({
         transition: "background 0.3s",
       }}
     >
-      {/* 카드 그리드 + 무한 스크롤 */}
       <InfiniteScroll
         dataLength={cards.length + 1}
         next={fetchMoreCards}
@@ -108,33 +102,24 @@ const MainPages: React.FC<MainPagesProps> = ({
         loader={<h4>Loading...</h4>}
         className="card-grid"
       >
-        <Card type="plus" onAdd={() => console.log("메시지 창으로 이동")} />
-
         {cards
           .slice()
           .sort((a, b) => b.id - a.id)
           .map((card) => (
             <Card
               key={card.id}
-              type="normal"
+              type="edit" // 삭제 버튼 포함한 타입 사용
               author={card.author}
               message={card.message}
               date={card.date}
               badge={card.badge}
               avatarUrl={card.avatarUrl}
+              onDelete={() => handleDelete(card.id)} // 삭제 기능 전달
             />
           ))}
       </InfiniteScroll>
-
-      {selectedCard && (
-        <MessageModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          card={selectedCard}
-        />
-      )}
     </div>
   );
 };
 
-export default MainPages;
+export default EditPage;
