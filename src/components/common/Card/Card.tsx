@@ -15,7 +15,6 @@ type CardProps = {
   badge?: "other" | "friend" | "coworker" | "family";
   onDelete?: () => void;
   onAdd?: () => void;
-  onClick?: () => void;
 };
 
 function Card({
@@ -27,7 +26,6 @@ function Card({
   badge = "other",
   onDelete,
   onAdd,
-  onClick,
 }: CardProps) {
   if (type === "plus") {
     return (
@@ -38,7 +36,7 @@ function Card({
   }
 
   return (
-    <div className="card" onClick={onClick}>
+    <div className="card">
       <div className="card-header">
         {/* 아바타 + 작성자/뱃지 묶음 */}
         <div className="card-user">

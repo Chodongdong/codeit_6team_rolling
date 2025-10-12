@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
-import "./MainPages.css";
+import Button from "../components/common/buttons/button"; // ✅ 공용 버튼 컴포넌트
 import "./Edit.css";
 
-// 카드 데이터 타입
+// 카드 타입 정의
 interface CardData {
   id: number;
   author: string;
@@ -14,7 +14,6 @@ interface CardData {
   avatarUrl: string;
 }
 
-// 초기 카드 데이터
 const allCards: CardData[] = [
   {
     id: 1,
@@ -76,6 +75,11 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
     setCards((prevCards) => prevCards.filter((card) => card.id !== id));
   };
 
+  const handleDeleteAll = () => {
+    setCards([]);
+    setHasMore(false);
+  };
+
   const fetchMoreCards = () => {
     const nextIndex = cards.length;
     const moreCards = allCards.slice(nextIndex, nextIndex + 3);
@@ -93,8 +97,22 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
         backgroundColor: bgColor,
         minHeight: "100vh",
         transition: "background 0.3s",
+        paddingTop: "20px",
       }}
     >
+      {/* 전체 삭제 버튼 */}
+      <div className="editpage-header">
+        <Button
+          variant="primary"
+          size="sm"
+          shape="default"
+          onClick={handleDeleteAll}
+          className="delete-all-btn"
+        >
+          삭제하기
+        </Button>
+      </div>
+
       <InfiniteScroll
         dataLength={cards.length + 1}
         next={fetchMoreCards}
@@ -108,13 +126,13 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
           .map((card) => (
             <Card
               key={card.id}
-              type="edit" // 삭제 버튼 포함한 타입 사용
+              type="edit"
               author={card.author}
               message={card.message}
               date={card.date}
               badge={card.badge}
               avatarUrl={card.avatarUrl}
-              onDelete={() => handleDelete(card.id)} // 삭제 기능 전달
+              onDelete={() => handleDelete(card.id)}
             />
           ))}
       </InfiniteScroll>

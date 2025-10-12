@@ -14,11 +14,10 @@ body {
   column-gap: 24px;
   row-gap: 28px;
   justify-items: center;
-  padding-top: 113px;
-  padding-bottom: 246px;
   box-sizing: border-box;
+  padding-bottom: 246px;
+  padding-top: 113px;
 }
-
 /* 안전: 카드가 그리드셀을 넘지 않도록 */
 .card,
 .Card,
@@ -44,15 +43,6 @@ body {
 @media (max-width: 360px) {
   .card-grid {
     grid-template-columns: 1fr;
-    padding: 32px 20px 38px 20px;
+    padding: 24px 20px 38px 20px;
   }
-}
-.delete-button-wrapper {
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  justify-content: center; /* 가운데 정렬 */
-  margin: 24px 0;
 }
