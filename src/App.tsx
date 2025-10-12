@@ -1,10 +1,9 @@
 // src/App.tsx
 import React from "react";
-
-import EditPage from "./pages/Edit";
+import MainPages from "./pages/MainPages";
 
 const App: React.FC = () => {
-  return <EditPage />;
+  return <MainPages />;
 };
 
 export default App;
