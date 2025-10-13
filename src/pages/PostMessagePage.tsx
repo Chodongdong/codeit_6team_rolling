@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
 // ✅ 공용 컴포넌트
@@ -16,6 +15,12 @@ import "react-quill-new/dist/quill.snow.css";
 import personIcon from "../assets/person.svg";
 import "../designSystem/utilities/utilities.css";
 import "./PostMessagePage.css";
+
+// =======================================================
+// 상수
+// =======================================================
+const BASE_URL = "https://rolling-api.vercel.app";
+const TEAM_NAME = "19-6"; // 고정된 팀 이름
 
 const RELATION_OPTIONS = ["지인", "친구", "가족", "동료"];
 const FONT_OPTIONS = ["Noto Sans", "Pretendard", "Nanum Gothic"];
@@ -40,6 +45,9 @@ const TOOLBAR_FORMATS = [
   "link",
 ];
 
+// =======================================================
+// 타입
+// =======================================================
 interface FormData {
   from: string;
   relation: string;
@@ -48,9 +56,11 @@ interface FormData {
   profileImage: string;
 }
 
-const PostMessagePage: React.FC = () => {
-  const { recipientId = "1" } = useParams<{ recipientId: string }>();
-
+// =======================================================
+// 메인 컴포넌트
+// =======================================================
+export default function PostMessagePage() {
+  const [recipientId, setRecipientId] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     from: "",
     relation: "지인",
@@ -64,12 +74,13 @@ const PostMessagePage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState<{ from?: string }>({});
 
+  // =======================================================
+  // 1️⃣ 프로필 이미지 불러오기
+  // =======================================================
   useEffect(() => {
     const fetchProfileImages = async () => {
       try {
-        const res = await axios.get(
-          "https://rolling-api.vercel.app/profile-images/"
-        );
+        const res = await axios.get(`${BASE_URL}/profile-images/`);
         if (Array.isArray(res.data.imageUrls)) {
           setProfileImages(res.data.imageUrls);
           setFormData((prev) => ({
@@ -84,6 +95,34 @@ const PostMessagePage: React.FC = () => {
     fetchProfileImages();
   }, []);
 
+  // =======================================================
+  // 2️⃣ 기존 recipient 불러오기 (자동 생성 X)
+  // =======================================================
+  useEffect(() => {
+    const fetchRecipient = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/${TEAM_NAME}/recipients/`);
+        const recipients = res.data || [];
+
+        if (recipients.length > 0) {
+          setRecipientId(recipients[0].id);
+          console.log("✅ 기존 recipient 사용:", recipients[0]);
+        } else {
+          console.warn("⚠️ 현재 존재하는 recipient가 없습니다.");
+          setRecipientId(null);
+        }
+      } catch (err) {
+        console.error("❌ recipient 목록 불러오기 실패:", err);
+        setRecipientId(null);
+      }
+    };
+
+    fetchRecipient();
+  }, []);
+
+  // =======================================================
+  // 3️⃣ 입력 핸들러
+  // =======================================================
   const handleChange = <K extends keyof FormData>(
     field: K,
     value: FormData[K]
@@ -94,16 +133,33 @@ const PostMessagePage: React.FC = () => {
     }
   };
 
+  // =======================================================
+  // 4️⃣ 메시지 전송 핸들러
+  // =======================================================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // recipient 존재하지 않으면 콘솔에만 로그 남기고 중단
+    if (!recipientId) {
+      console.error(
+        "❌ recipient가 존재하지 않습니다. 메시지를 보낼 수 없습니다."
+      );
+      return;
+    }
+
     if (!formData.from.trim()) {
-      setErrors({ from: "값을 입력해 주세요." });
+      setErrors({ from: "이름을 입력해 주세요." });
+      return;
+    }
+
+    if (!formData.message.trim()) {
+      alert("메시지를 입력해 주세요!");
       return;
     }
 
     const postData = {
-      team: "6",
-      recipientId: Number(recipientId),
+      team: TEAM_NAME,
+      recipientId,
       sender: formData.from,
       profileImageURL: formData.profileImage,
       relationship: formData.relation,
@@ -111,23 +167,36 @@ const PostMessagePage: React.FC = () => {
       font: formData.font,
     };
 
+    console.log("📤 전송 데이터:", postData);
+
     try {
       setLoading(true);
       const res = await axios.post(
-        `https://rolling-api.vercel.app/6/recipients/${recipientId}/messages/`,
+        `${BASE_URL}/${TEAM_NAME}/recipients/${recipientId}/messages/`,
         postData,
         { headers: { "Content-Type": "application/json" } }
       );
-      setSuccessMessage(`롤링페이퍼가 생성되었습니다! (ID: ${res.data.id})`);
+
+      console.log("✅ 전송 성공:", res.data);
+      setSuccessMessage(`🎉 메시지 생성 완료! (ID: ${res.data.id})`);
       setFormData((prev) => ({ ...prev, from: "", message: "" }));
     } catch (err) {
-      console.error("❌ 요청 실패:", err);
-      alert("메시지 생성 중 오류가 발생했습니다.");
+      // recipient가 존재하지 않아 서버에서 404 발생 시
+      if (axios.isAxiosError(err) && err.response?.status === 404) {
+        console.error(
+          "❌ recipient를 찾을 수 없습니다. 존재하지 않는 recipient입니다."
+        );
+      } else {
+        console.error("❌ 메시지 생성 중 오류 발생:", err);
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  // =======================================================
+  // 렌더링
+  // =======================================================
   return (
     <div className="post-message-page">
       <Header />
@@ -154,28 +223,45 @@ const PostMessagePage: React.FC = () => {
           <div className="form-group">
             <label className="f-24b">프로필 이미지</label>
             <div className="profile-section">
-              <div
-                className={`profile-item-large ${formData.profileImage === profileImages[0] ? "selected" : ""}`}
-                onClick={() => handleChange("profileImage", profileImages[0])}
-              >
-                <img src={profileImages[0] || personIcon} alt="기본 이미지" />
-              </div>
-              <div className="profile-right">
-                <p className="profile-hint f-14r text-muted">
-                  프로필 이미지를 선택해 주세요!
-                </p>
-                <div className="profile-list">
-                  {profileImages.slice(1).map((url, index) => (
-                    <div
-                      key={url}
-                      className={`profile-item ${formData.profileImage === url ? "selected" : ""}`}
-                      onClick={() => handleChange("profileImage", url)}
-                    >
-                      <img src={url} alt={`프로필 ${index + 1}`} />
+              {profileImages.length > 0 ? (
+                <>
+                  <div
+                    className={`profile-item-large ${
+                      formData.profileImage === profileImages[0]
+                        ? "selected"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      handleChange("profileImage", profileImages[0])
+                    }
+                  >
+                    <img
+                      src={profileImages[0] || personIcon}
+                      alt="기본 이미지"
+                    />
+                  </div>
+                  <div className="profile-right">
+                    <p className="profile-hint f-14r text-muted">
+                      프로필 이미지를 선택해 주세요!
+                    </p>
+                    <div className="profile-list">
+                      {profileImages.slice(1).map((url, index) => (
+                        <div
+                          key={url}
+                          className={`profile-item ${
+                            formData.profileImage === url ? "selected" : ""
+                          }`}
+                          onClick={() => handleChange("profileImage", url)}
+                        >
+                          <img src={url} alt={`프로필 ${index + 1}`} />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                </>
+              ) : (
+                <p>🌀 프로필 이미지를 불러오는 중...</p>
+              )}
             </div>
           </div>
 
@@ -219,7 +305,7 @@ const PostMessagePage: React.FC = () => {
             className="full-width-btn f-20b"
             disabled={loading || !formData.message.trim()}
           >
-            {loading ? "생성 중..." : "생성하기"}
+            {loading ? "생성 중..." : "메시지 보내기"}
           </Button>
 
           {successMessage && (
@@ -231,6 +317,4 @@ const PostMessagePage: React.FC = () => {
       </main>
     </div>
   );
-};
-
-export default PostMessagePage;
+}
