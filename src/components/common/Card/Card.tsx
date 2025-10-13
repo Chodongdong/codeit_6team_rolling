@@ -3,6 +3,7 @@ import Button from "../buttons/button";
 import Badge from "../Badge/Badge";
 import "./Card.css";
 import PlusButton from "../PlusButton/PlusButton";
+
 import trashIcon from "../../../assets/trash.png";
 
 type CardProps = {
