@@ -1,8 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
-import Button from "../components/common/buttons/button"; // ✅ 공용 버튼 컴포넌트
+import Button from "../components/common/buttons/button";
 import "./Edit.css";
+
+// 배경색 유니온 타입 정의
+type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
+
+// 카드 개수 상수
+const INITIAL_CARD_COUNT = 6;
+const MORE_CARD_COUNT = 3;
 
 // 카드 타입 정의
 interface CardData {
@@ -14,6 +21,7 @@ interface CardData {
   avatarUrl: string;
 }
 
+// 더미 카드 데이터
 const allCards: CardData[] = [
   {
     id: 1,
@@ -62,33 +70,44 @@ const allCards: CardData[] = [
   },
 ];
 
+// Props 인터페이스
 interface MainPagesProps {
-  initialBgColor?: string;
+  initialBgColor?: BgColor;
 }
 
 const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
-  const [cards, setCards] = useState(allCards.slice(0, 6));
+  const [cards, setCards] = useState(allCards.slice(0, INITIAL_CARD_COUNT));
   const [hasMore, setHasMore] = useState(true);
-  const [bgColor] = useState(initialBgColor);
+  const [bgColor] = useState<BgColor>(initialBgColor);
 
+  // 삭제 핸들러
   const handleDelete = (id: number) => {
     setCards((prevCards) => prevCards.filter((card) => card.id !== id));
   };
 
+  // 전체 삭제
   const handleDeleteAll = () => {
     setCards([]);
     setHasMore(false);
   };
 
+  // 더 불러오기
   const fetchMoreCards = () => {
     const nextIndex = cards.length;
-    const moreCards = allCards.slice(nextIndex, nextIndex + 3);
+    const moreCards = allCards.slice(nextIndex, nextIndex + MORE_CARD_COUNT);
+
     if (moreCards.length === 0) {
       setHasMore(false);
       return;
     }
+
     setCards([...cards, ...moreCards]);
   };
+
+  // 정렬된 카드 목록을 메모이제이션
+  const sortedCards = useMemo(() => {
+    return [...cards].sort((a, b) => b.id - a.id);
+  }, [cards]);
 
   return (
     <div
@@ -113,6 +132,7 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
         </Button>
       </div>
 
+      {/* 무한 스크롤 카드 목록 */}
       <InfiniteScroll
         dataLength={cards.length + 1}
         next={fetchMoreCards}
@@ -120,21 +140,18 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
         loader={<h4>Loading...</h4>}
         className="card-grid"
       >
-        {cards
-          .slice()
-          .sort((a, b) => b.id - a.id)
-          .map((card) => (
-            <Card
-              key={card.id}
-              type="edit"
-              author={card.author}
-              message={card.message}
-              date={card.date}
-              badge={card.badge}
-              avatarUrl={card.avatarUrl}
-              onDelete={() => handleDelete(card.id)}
-            />
-          ))}
+        {sortedCards.map((card) => (
+          <Card
+            key={card.id}
+            type="edit"
+            author={card.author}
+            message={card.message}
+            date={card.date}
+            badge={card.badge}
+            avatarUrl={card.avatarUrl}
+            onDelete={() => handleDelete(card.id)}
+          />
+        ))}
       </InfiniteScroll>
     </div>
   );

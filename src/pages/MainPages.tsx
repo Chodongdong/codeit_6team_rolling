@@ -4,6 +4,9 @@ import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal"; // 수정된 모달
 import "./MainPages.css";
 
+// 배경색 유니온 타입 정의
+type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
+
 // 카드 데이터 타입
 interface CardData {
   id: number;
@@ -64,7 +67,7 @@ const allCards: CardData[] = [
 ];
 
 interface MainPagesProps {
-  initialBgColor?: string;
+  initialBgColor?: BgColor;
 }
 
 const MainPages: React.FC<MainPagesProps> = ({
@@ -72,7 +75,7 @@ const MainPages: React.FC<MainPagesProps> = ({
 }) => {
   const [cards, setCards] = useState(allCards.slice(0, 6));
   const [hasMore, setHasMore] = useState(true);
-  const [bgColor] = useState(initialBgColor);
+  const [bgColor] = useState<BgColor>(initialBgColor);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
