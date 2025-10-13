@@ -112,7 +112,7 @@ const EditPage: React.FC<MainPagesProps> = ({ initialBgColor = "#FFE2AD" }) => {
       <div className="editpage-header">
         <Button
           variant="primary"
-          size="sm"
+          size="md"
           shape="default"
           onClick={handleDeleteAll}
           className="delete-all-btn"
