@@ -30,128 +30,123 @@
   line-height: 28px;
 }
 .primary:hover {
-  background: #861DEE;
+  background: #861dee;
 }
 .primary:active {
-  background: #4d1fa3; 
+  background: #4d1fa3;
 }
 
 .primary:focus {
-  outline: 1px solid #9b51e0; 
+  outline: 1px solid #9b51e0;
 }
 .primary:disabled {
-  background: #CCCCCC;
+  background: #cccccc;
   cursor: not-allowed;
 }
-.primary.md{
+.primary.md {
   font-weight: 400;
   font-size: 16px;
   line-height: 26px;
 }
 
 .secondary {
-  background: #FFFFFF;
-  border: 1px solid #9935FF;
-  color: #861DEE;
+  background: #ffffff;
+  border: 1px solid #9935ff;
+  color: #861dee;
   font-weight: 400;
   font-size: 16px;
   line-height: 26px;
 }
 .secondary:active {
-  background: #861DEE; 
-  color: #9747FF;
-  background-color: #F8F0FF;
-  
+  background: #861dee;
+  color: #9747ff;
+  background-color: #f8f0ff;
 }
 
 .secondary:focus {
-  outline: 1px solid #6E0AD1;
-  color: #9747FF;
-  background-color: #F8F0FF;
-
+  outline: 1px solid #6e0ad1;
+  color: #9747ff;
+  background-color: #f8f0ff;
 }
 .secondary:hover {
-  background: #861DEE;
-  color: #9747FF;
-    background-color: #F8F0FF;
-
+  background: #861dee;
+  color: #9747ff;
+  background-color: #f8f0ff;
 }
 .secondary:disabled {
   border: none;
-  background-color: #CCCCCC;
-  color: #FFFFFF;
+  background-color: #cccccc;
+  color: #ffffff;
   cursor: not-allowed;
 }
 
 .outlined {
-  background: #FFFFFF;
-  border: 1px solid #CCCCCC;
+  background: #ffffff;
+  border: 1px solid #cccccc;
   color: #181818;
   font-weight: 700;
   font-size: 18px;
   line-height: 28px;
 }
 .outlined:hover {
-  background: #F6F6F6;
+  background: #f6f6f6;
 }
 .outlined:active {
-  background: #F6F6F6; 
+  background: #f6f6f6;
 }
 
 .outlined:focus {
-  outline: 1px solid #F6F6F6; 
+  outline: 1px solid #f6f6f6;
 }
 .outlined:disabled {
-  color: #FFFFFF;
-  border-color: #CCCCCC;
+  color: #ffffff;
+  border-color: #cccccc;
   cursor: not-allowed;
-  background-color: #CCCCCC;
+  background-color: #cccccc;
 }
-.outlined.md{
+.outlined.md {
   font-size: 16px;
   font-weight: 400;
   line-height: 26px;
 }
-.outlined.sm{
+.outlined.sm {
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
 }
-.outlined.xs{
+.outlined.xs {
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
 }
 
-
-
 /* 
    Size
  */
 .lg {
-  min-width: 208px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  min-width: 208px; /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+
   height: 56px;
   font-size: 16px;
 }
 
 .md {
-  min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  min-width: 122px; /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+
   height: 40px;
   font-size: 14px;
 }
 
 .sm {
-  min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  min-width: 122px; /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+
   height: 36px;
   font-size: 14px;
 }
 
 .xs {
-  min-width: 122px;  /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  min-width: 122px; /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+
   height: 28px;
   font-size: 14px;
   font-weight: 400;

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
-import MessageModal from "../components/common/Modal/MessageModal"; // 수정된 모달
+import MessageModal from "../components/common/Modal/MessageModal";
 import "./MainPages.css";
 
-// 배경색 유니온 타입 정의
+// 배경색 유니온 타입
 type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
 
 // 카드 데이터 타입
@@ -15,6 +15,11 @@ interface CardData {
   date: string;
   badge: "other" | "friend" | "coworker" | "family";
   avatarUrl: string;
+}
+
+// MainPages 컴포넌트 props 타입
+interface MainPagesProps {
+  initialBgColor?: BgColor;
 }
 
 // 초기 카드 데이터
@@ -66,14 +71,8 @@ const allCards: CardData[] = [
   },
 ];
 
-interface MainPagesProps {
-  initialBgColor?: BgColor;
-}
-
-const MainPages: React.FC<MainPagesProps> = ({
-  initialBgColor = "#FFE2AD",
-}) => {
-  const [cards, setCards] = useState(allCards.slice(0, 6));
+function MainPages({ initialBgColor = "#FFE2AD" }: MainPagesProps) {
+  const [cards, setCards] = useState<CardData[]>(allCards.slice(0, 6));
   const [hasMore, setHasMore] = useState(true);
   const [bgColor] = useState<BgColor>(initialBgColor);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
@@ -103,7 +102,6 @@ const MainPages: React.FC<MainPagesProps> = ({
         transition: "background 0.3s",
       }}
     >
-      {/* 카드 그리드 + 무한 스크롤 */}
       <InfiniteScroll
         dataLength={cards.length + 1}
         next={fetchMoreCards}
@@ -138,6 +136,6 @@ const MainPages: React.FC<MainPagesProps> = ({
       )}
     </div>
   );
-};
+}
 
 export default MainPages;
