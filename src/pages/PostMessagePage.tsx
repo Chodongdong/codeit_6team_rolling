@@ -1,13 +1,14 @@
-// src/pages/PostMessagePage.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-// ✅ 공용 컴포넌트 import
+// ✅ 공용 컴포넌트
 import Header from "../components/common/Header/Header";
 import Dropdown from "../components/common/Dropdown/Dropdown";
 import Button from "../components/common/buttons/button";
 import Input from "../components/common/Input/Input";
 
-// ✅ 외부 라이브러리 (Quill Editor)
+// ✅ 외부 라이브러리
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 
@@ -16,9 +17,6 @@ import personIcon from "../assets/person.svg";
 import "../designSystem/utilities/utilities.css";
 import "./PostMessagePage.css";
 
-// =======================================================
-// 상수 정의 영역
-// =======================================================
 const RELATION_OPTIONS = ["지인", "친구", "가족", "동료"];
 const FONT_OPTIONS = ["Noto Sans", "Pretendard", "Nanum Gothic"];
 
@@ -42,36 +40,42 @@ const TOOLBAR_FORMATS = [
   "link",
 ];
 
-// =======================================================
-// 메인 컴포넌트
-// =======================================================
-const PostMessagePage = () => {
-  const inputContainerRef = useRef<HTMLDivElement>(null);
+interface FormData {
+  from: string;
+  relation: string;
+  font: string;
+  message: string;
+  profileImage: string;
+}
 
-  const [fromError, setFromError] = useState(false);
-  const [relation, setRelation] = useState("지인");
-  const [font, setFont] = useState("Noto Sans");
-  const [message, setMessage] = useState("");
+const PostMessagePage: React.FC = () => {
+  const { recipientId = "1" } = useParams<{ recipientId: string }>();
+
+  const [formData, setFormData] = useState<FormData>({
+    from: "",
+    relation: "지인",
+    font: "Noto Sans",
+    message: "",
+    profileImage: personIcon,
+  });
+
   const [profileImages, setProfileImages] = useState<string[]>([]);
-  const [selectedProfile, setSelectedProfile] = useState<string>(personIcon);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errors, setErrors] = useState<{ from?: string }>({});
 
-  // =======================================================
-  // 1️⃣ 프로필 이미지 목록 불러오기
-  // =======================================================
   useEffect(() => {
     const fetchProfileImages = async () => {
       try {
-        const res = await fetch(
+        const res = await axios.get(
           "https://rolling-api.vercel.app/profile-images/"
         );
-        const data = await res.json();
-        console.log("✅ 프로필 이미지 목록:", data);
-
-        if (data.imageUrls && Array.isArray(data.imageUrls)) {
-          setProfileImages(data.imageUrls);
-          setSelectedProfile(data.imageUrls[0]);
+        if (Array.isArray(res.data.imageUrls)) {
+          setProfileImages(res.data.imageUrls);
+          setFormData((prev) => ({
+            ...prev,
+            profileImage: res.data.imageUrls[0],
+          }));
         }
       } catch (err) {
         console.error("❌ 프로필 이미지 불러오기 실패:", err);
@@ -80,59 +84,42 @@ const PostMessagePage = () => {
     fetchProfileImages();
   }, []);
 
-  // =======================================================
-  // 2️⃣ 메시지 생성 (POST)
-  // =======================================================
+  const handleChange = <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "from" && typeof value === "string" && value.trim() !== "") {
+      setErrors((prev) => ({ ...prev, from: undefined }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const inputEl = inputContainerRef.current?.querySelector("input");
-    const fromName = inputEl?.value.trim() ?? "";
-
-    if (!fromName) {
-      setFromError(true);
+    if (!formData.from.trim()) {
+      setErrors({ from: "값을 입력해 주세요." });
       return;
     }
 
-    // ✅ Swagger MessageCreate 모델 기반 Body
     const postData = {
-      team: "team6",
-      recipientId: 1, // 실제 recipient ID로 교체 가능
-      sender: fromName,
-      profileImageURL: selectedProfile,
-      relationship: relation,
-      content: message,
-      font,
+      team: "6",
+      recipientId: Number(recipientId),
+      sender: formData.from,
+      profileImageURL: formData.profileImage,
+      relationship: formData.relation,
+      content: formData.message,
+      font: formData.font,
     };
-
-    console.log("📤 전송 데이터:", postData);
 
     try {
       setLoading(true);
-
-      const res = await fetch(
-        "https://rolling-api.vercel.app/team6/recipients/1/messages/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(postData),
-        }
+      const res = await axios.post(
+        `https://rolling-api.vercel.app/6/recipients/${recipientId}/messages/`,
+        postData,
+        { headers: { "Content-Type": "application/json" } }
       );
-
-      console.log("🛬 응답 상태:", res.status);
-      const responseText = await res.text();
-      console.log("🛬 응답 본문:", responseText);
-
-      if (!res.ok) {
-        throw new Error(`서버 응답 오류 (${res.status}): ${responseText}`);
-      }
-
-      const data = JSON.parse(responseText);
-      console.log("✅ 메시지 생성 성공:", data);
-
-      setSuccessMessage(
-        `롤링페이퍼가 성공적으로 생성되었습니다! (ID: ${data.id})`
-      );
+      setSuccessMessage(`롤링페이퍼가 생성되었습니다! (ID: ${res.data.id})`);
+      setFormData((prev) => ({ ...prev, from: "", message: "" }));
     } catch (err) {
       console.error("❌ 요청 실패:", err);
       alert("메시지 생성 중 오류가 발생했습니다.");
@@ -141,47 +128,38 @@ const PostMessagePage = () => {
     }
   };
 
-  // =======================================================
-  // 3️⃣ UI 렌더링
-  // =======================================================
   return (
     <div className="post-message-page">
       <Header />
-
       <main className="post-message-container">
         <form className="message-form" onSubmit={handleSubmit}>
-          {/* From 입력 */}
-          <div className="form-group" ref={inputContainerRef}>
+          {/* From */}
+          <div className="form-group">
             <label htmlFor="from" className="f-24b">
               From.
             </label>
             <Input
               id="from"
+              value={formData.from}
+              onChange={(e) => handleChange("from", e.target.value)}
               placeholder="이름을 입력해 주세요"
-              onBlur={(e) => {
-                if (!e.target.value.trim()) setFromError(true);
-                else setFromError(false);
-              }}
-              className={`f-16r ${fromError ? "error" : ""}`}
+              className={`f-16r ${errors.from ? "error" : ""}`}
             />
-            {fromError && (
-              <span className="error-text f-14r">값을 입력해 주세요.</span>
+            {errors.from && (
+              <span className="error-text f-14r">{errors.from}</span>
             )}
           </div>
 
-          {/* 프로필 이미지 선택 */}
+          {/* 프로필 이미지 */}
           <div className="form-group">
             <label className="f-24b">프로필 이미지</label>
             <div className="profile-section">
               <div
-                className={`profile-item-large ${
-                  selectedProfile === profileImages[0] ? "selected" : ""
-                }`}
-                onClick={() => setSelectedProfile(profileImages[0])}
+                className={`profile-item-large ${formData.profileImage === profileImages[0] ? "selected" : ""}`}
+                onClick={() => handleChange("profileImage", profileImages[0])}
               >
                 <img src={profileImages[0] || personIcon} alt="기본 이미지" />
               </div>
-
               <div className="profile-right">
                 <p className="profile-hint f-14r text-muted">
                   프로필 이미지를 선택해 주세요!
@@ -189,13 +167,11 @@ const PostMessagePage = () => {
                 <div className="profile-list">
                   {profileImages.slice(1).map((url, index) => (
                     <div
-                      key={index}
-                      className={`profile-item ${
-                        selectedProfile === url ? "selected" : ""
-                      }`}
-                      onClick={() => setSelectedProfile(url)}
+                      key={url}
+                      className={`profile-item ${formData.profileImage === url ? "selected" : ""}`}
+                      onClick={() => handleChange("profileImage", url)}
                     >
-                      <img src={url} alt={`프로필 ${index + 2}`} />
+                      <img src={url} alt={`프로필 ${index + 1}`} />
                     </div>
                   ))}
                 </div>
@@ -209,7 +185,7 @@ const PostMessagePage = () => {
             <Dropdown
               options={RELATION_OPTIONS}
               placeholder="선택하세요"
-              onSelect={(value) => setRelation(value)}
+              onSelect={(value) => handleChange("relation", value)}
             />
           </div>
 
@@ -218,8 +194,8 @@ const PostMessagePage = () => {
             <label className="f-24b">내용을 입력해 주세요</label>
             <ReactQuill
               theme="snow"
-              value={message}
-              onChange={setMessage}
+              value={formData.message}
+              onChange={(value) => handleChange("message", value)}
               modules={TOOLBAR_MODULES}
               formats={TOOLBAR_FORMATS}
               placeholder="메시지를 입력하세요..."
@@ -232,21 +208,20 @@ const PostMessagePage = () => {
             <Dropdown
               options={FONT_OPTIONS}
               placeholder="선택하세요"
-              onSelect={(value) => setFont(value)}
+              onSelect={(value) => handleChange("font", value)}
             />
           </div>
 
-          {/* 생성 버튼 */}
+          {/* 버튼 */}
           <Button
             type="submit"
             variant="primary"
             className="full-width-btn f-20b"
-            disabled={loading || !message.trim()}
+            disabled={loading || !formData.message.trim()}
           >
             {loading ? "생성 중..." : "생성하기"}
           </Button>
 
-          {/* 성공 메시지 */}
           {successMessage && (
             <p className="success-text f-16b" style={{ color: "green" }}>
               {successMessage}
@@ -258,7 +233,4 @@ const PostMessagePage = () => {
   );
 };
 
-// =======================================================
-// 기본 export
-// =======================================================
 export default PostMessagePage;
