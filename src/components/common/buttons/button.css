@@ -1,4 +1,13 @@
-/* 공통 버튼 스타일 */
+/* 공통 버튼 스타일 
+ * 1) 일반 버튼
+ * <Button variant="primary" size="lg">확인</Button>
+ * <Button variant="secondary" size="md">취소</Button>
+*  2) 아이콘 + 텍스트 버튼
+ * <Button variant="outlined" size="sm" icon="/icons/smile.png">
+ *   좋아요
+ * </Button>
+ * 아이콘 버튼(동그라미에 플러스 버튼있는거, 쓰레기통 버튼)은 따로 PlusButton, TrashButton으로 Components안에 있어요
+*/
 .btn {
   display: inline-flex;
   align-items: center;
@@ -114,79 +123,35 @@
   line-height: 20px;
 }
 
-.circle {
-  border-radius: 50% !important;
-  width: 56px !important;
-  height: 56px !important;
-  padding: 0;
-  background: #555555;
-  
-}
 
-.circle:hover {
-  background: #555555;
-}
-
-.circle:active {
-  background: #555555; 
-}
-
-.circle:focus {
-  outline: 1px solid #555555;
-}
-
-.circle:disabled {
-  background: #cccccc;
-}
-.trash {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 6px;
-  border: 1px solid #555555;
-  background: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-.trash:hover {
-  background: #F6F6F6;
-}
-.trash:active {
-  background: #F6F6F6;
-}
-.trash:focus {
-  outline: 1px solid #555555;
-}
-.trash:disabled {
-  background: #eaeaea;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
 
 /* 
    Size
  */
 .lg {
-  width: 208px;
+  min-width: 208px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+  width: auto;
   height: 56px;
   font-size: 16px;
 }
 
 .md {
-  width: 122px;
+  min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+  width: auto;
   height: 40px;
   font-size: 14px;
 }
 
 .sm {
-  width: 122px;
+  min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+  width: auto;
   height: 36px;
   font-size: 14px;
 }
 
 .xs {
-  width: 122px;
+  min-width: 122px;  /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
+  width: auto;
   height: 28px;
   font-size: 14px;
   font-weight: 400;
