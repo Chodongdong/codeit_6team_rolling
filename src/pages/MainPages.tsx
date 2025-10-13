@@ -123,6 +123,10 @@ function MainPages({ initialBgColor = "#FFE2AD" }: MainPagesProps) {
               date={card.date}
               badge={card.badge}
               avatarUrl={card.avatarUrl}
+              onClick={() => {
+                setSelectedCard(card);
+                setIsModalOpen(true);
+              }}
             />
           ))}
       </InfiniteScroll>
