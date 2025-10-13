@@ -1,0 +1,84 @@
+.card {
+  width: 100%;
+  max-width: 384px;
+  height: auto;
+  min-height: 230px;
+  border-radius: 16px;
+  background: var(--white, #fff);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.card-user {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* 아바타와 텍스트/뱃지 간격 */
+}
+
+.card-avatar {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+
+  border-radius: 100px; /* 원형 */
+  border: 1px solid var(--gray-200, #eee);
+  background: var(--white, #fff);
+
+  object-fit: cover; /* 이미지 비율 유지하며 꽉 채움 */
+}
+
+.delete-btn {
+  border-radius: 6px;
+  border: 1px solid var(--gray-300, #ccc);
+  background: var(--white, #fff);
+  cursor: pointer;
+}
+
+.card-body {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  color: var(--gray-600, #4a4a4a);
+
+  /* Font/18 Regular */
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px; /* 155.556% */
+  letter-spacing: -0.18px;
+}
+
+.card-footer {
+  color: var(--gray-400, #999);
+
+  /* Font/12 Regular */
+  font-family: Pretendard;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 150% */
+  letter-spacing: -0.06px;
+}
+
+.plus-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.plus-icon {
+  color: var(--gray500, #555);
+}
