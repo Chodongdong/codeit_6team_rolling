@@ -130,28 +130,28 @@
  */
 .lg {
   min-width: 208px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  width: auto;
   height: 56px;
   font-size: 16px;
 }
 
 .md {
   min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  width: auto;
   height: 40px;
   font-size: 14px;
 }
 
 .sm {
   min-width: 122px;/*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  width: auto;
   height: 36px;
   font-size: 14px;
 }
 
 .xs {
   min-width: 122px;  /*안에 글이 더 길어지면 같이 길어지게 바꿨습니다*/
-  
+  width: auto;
   height: 28px;
   font-size: 14px;
   font-weight: 400;
