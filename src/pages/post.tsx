@@ -10,7 +10,7 @@ import "./Post.css";
  */
 
 const BASE_URL = "https://rolling-api.vercel.app";
-const TEAM_NAME = "codeit";
+const TEAM_NAME = "19-6";
 
 // 색상
 const COLORS = ["beige", "purple", "blue", "green"];
