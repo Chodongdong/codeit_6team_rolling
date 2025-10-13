@@ -14,8 +14,7 @@ import "./Input.css";
  * <Input placeholder="이메일" className="my-custom" />
  */
 
-interface InputProps
-  extends Omit<ComponentPropsWithoutRef<"input">, "value" | "onChange"> {
+interface InputProps extends ComponentPropsWithoutRef<"input"> {
   placeholder?: string;
 }
 
