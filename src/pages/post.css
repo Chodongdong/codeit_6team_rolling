@@ -11,10 +11,10 @@
   .post-container {
     width: 100%;
     max-width: 720px;
-    align-items: center; /* 중앙 정렬 */
-  justify-content: flex-start; /* 위에서부터 쌓이게 */
-  gap: 24px; /* 각 섹션 간격 적당히 */
-  height: auto; /* 높이 고정 제거 */
+    align-items: center; 
+    justify-content: flex-start; 
+    gap: 24px; 
+    height: auto; 
   }
   
   /* --- 이름 입력 --- */
@@ -26,7 +26,7 @@
 
   .input-section input {
     width: 100%;
-    max-width: 720px; /* 화면 크기 기준 */
+    max-width: 720px; 
     height: 50px;
     border: 1.5px solid #CCCCCC;
     border-radius: 6px;
@@ -38,12 +38,12 @@
   
   .input-label {
     font-size: 24px;
-    line-height: 32px;
+    line-height: 36px;
     font-weight: 700;
     color: #181818;
   }
   
-  /* --- 제목/설명 --- */
+  /* --- 제목 --- */
   .subtitle-section h3 {
     font-size: 24px;
     line-height: 36px;
@@ -89,7 +89,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.1); /* 살짝 어둡게 */
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 12px;
   }
   

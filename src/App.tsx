@@ -1,9 +1,9 @@
 // src/App.tsx
 import React from 'react';
-import Post from './pages/post';
+import MainPage from './pages/MainPage';
 
 const App: React.FC = () => {
-  return <Post />;
+  return <MainPage />;
 };
 
 export default App;

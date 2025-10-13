@@ -1,21 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ToggleButton from "../components/common/ToggleButton/ToggleButton";
 import Input from "../components/common/Input/Input";
 import "./Post.css";
 
 /**
- * 📌 Post.tsx (최종 안정 버전)
- * 롤링페이퍼 생성 페이지
- * - To. 이름 입력
- * - 배경 선택 (컬러 / 이미지)
- * - API 연동: https://rolling-api.vercel.app
+ *  Post.tsx 
+ * - fetch → axios 통일
  */
 
 const BASE_URL = "https://rolling-api.vercel.app";
 const TEAM_NAME = "codeit";
 
-// 
+// 색상
 const COLORS = ["beige", "purple", "blue", "green"];
 
 const COLOR_MAP: Record<string, string> = {
@@ -30,16 +27,16 @@ const Post: React.FC = () => {
   const [selected, setSelected] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [recipientName, setRecipientName] = useState<string>(""); 
 
   /**
-   * ✅ 배경 이미지 불러오기
+   * 배경 이미지 불러오기 (axios로 통일)
    */
   useEffect(() => {
     const fetchBackgroundImages = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/background-images/`);
-        const data = await res.json();
+        const res = await axios.get(`${BASE_URL}/background-images/`);
+        const data = res.data;
 
         if (data.imageUrls && Array.isArray(data.imageUrls)) {
           setImageUrls(data.imageUrls);
@@ -57,11 +54,13 @@ const Post: React.FC = () => {
 
   /**
    * 롤링페이퍼 생성 핸들러
-   *  recipient 생성 →  message 등록
+   * recipient 생성 →  message 등록
    */
-  const handleCreate = async () => {
-    const recipientName = inputRef.current?.value?.trim() || "";
-    if (!recipientName) {
+  const handleCreate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const name = recipientName.trim();
+    if (!name) {
       alert("받는 사람 이름을 입력해 주세요!");
       return;
     }
@@ -74,35 +73,30 @@ const Post: React.FC = () => {
     try {
       setLoading(true);
 
-      // ✅ 1️⃣ recipient 생성 요청 데이터 구성
-      const recipientPayload: any = {
+      // recipient 생성 payload
+      const recipientPayload = {
         team: TEAM_NAME,
-        name: recipientName,
-        // 🔹 서버가 필수로 요구하는 필드
-        backgroundColor:
-          mode === "컬러" ? COLORS[selected] : COLORS[0], // 이미지일 때도 기본 beige
+        name,
+        backgroundColor: mode === "컬러" ? COLORS[selected] : COLORS[0], 
+        backgroundImageURL: mode === "이미지" ? imageUrls[selected] : "",
       };
-
-      if (mode === "이미지") {
-        recipientPayload.backgroundImageURL = imageUrls[selected];
-      }
 
       const recipientRes = await axios.post(
         `${BASE_URL}/${TEAM_NAME}/recipients/`,
         recipientPayload
       );
 
-      const recipientId = recipientRes.data.id;
+      const recipientId: number = recipientRes.data.id;
       console.log("✅ Recipient 생성 완료:", recipientRes.data);
 
-      // ✅ 2️⃣ message 생성
+      // message 생성 payload
       const messagePayload = {
         team: TEAM_NAME,
         recipientId,
         sender: "강호동",
         profileImageURL: "https://example.com/profile1.png",
         relationship: "친구",
-        content: `To. ${recipientName}님 🎉 축하드립니다!`,
+        content: `To. ${name}님 🎉 축하드립니다!`,
         font: "Pretendard",
       };
 
@@ -112,11 +106,11 @@ const Post: React.FC = () => {
       );
 
       console.log("✅ 메시지 등록 완료:", messageRes.data);
-      alert(`롤링페이퍼 생성 완료!\nID: ${recipientId}`);
-    } catch (error: any) {
-      console.error("❌ 생성 중 오류 발생:", error.response?.data || error.message);
-      if (error.response?.data) {
-        alert(`오류 발생:\n${JSON.stringify(error.response.data, null, 2)}`);
+      alert(`🎉 롤링페이퍼 생성 완료!\nID: ${recipientId}`);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("❌ 생성 중 오류:", error.response?.data || error.message);
+        alert(`오류 발생:\n${JSON.stringify(error.response?.data, null, 2)}`);
       } else {
         alert("롤링페이퍼 생성 중 오류가 발생했습니다.");
       }
@@ -131,7 +125,13 @@ const Post: React.FC = () => {
         {/* To. 입력 */}
         <div className="input-section">
           <label className="input-label">To.</label>
-          <Input ref={inputRef} placeholder="받는 사람 이름을 입력해 주세요" />
+          <Input
+            value={recipientName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setRecipientName(e.target.value)
+            }
+            placeholder="받는 사람 이름을 입력해 주세요"
+          />
         </div>
 
         {/* 안내 문구 */}
@@ -149,7 +149,7 @@ const Post: React.FC = () => {
           />
         </div>
 
-        {/* 배경 선택 그리드 */}
+        {/* 배경 선택 */}
         <div className="select-grid">
           {mode === "컬러"
             ? COLORS.map((color, idx) => (
