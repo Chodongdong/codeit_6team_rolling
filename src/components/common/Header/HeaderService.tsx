@@ -12,11 +12,23 @@ import { useParams } from "react-router-dom";
 
 const BASE_URL = "https://rolling-api.vercel.app/19-6";
 
-function HeaderService() {
+// ✅ API 응답 타입 정의
+interface RecipientResponse {
+  id: number;
+  name: string;
+}
+
+interface Message {
+  id: number;
+  sender: string;
+  profileImageURL: string | null;
+}
+
+const HeaderService = () => {
   const params = useParams();
   const recipientId = Number(params.id);
 
-  // ✅ 상태값
+  // ✅ 상태 정의
   const [recipientName, setRecipientName] = useState("수취인");
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [totalWriters, setTotalWriters] = useState(0);
@@ -30,14 +42,18 @@ function HeaderService() {
   // =======================================================
   useEffect(() => {
     if (!recipientId) return;
+
     const fetchRecipient = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/recipients/${recipientId}/`);
+        const res = await axios.get<RecipientResponse>(
+          `${BASE_URL}/recipients/${recipientId}/`
+        );
         setRecipientName(res.data.name || "수취인");
       } catch (err) {
         console.warn("❌ 수취인 불러오기 실패:", err);
       }
     };
+
     fetchRecipient();
   }, [recipientId]);
 
@@ -46,27 +62,30 @@ function HeaderService() {
   // =======================================================
   useEffect(() => {
     if (!recipientId) return;
+
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.get<{ results: Message[] }>(
           `${BASE_URL}/recipients/${recipientId}/messages/`
         );
+
         const messages = Array.isArray(res.data.results)
           ? res.data.results
-          : res.data;
-        const avatarList: Avatar[] = messages
-          .slice(0, 3)
-          .map((msg: any, idx: number) => ({
-            id: msg.id ?? idx,
-            src: msg.profileImageURL,
-            alt: msg.sender,
-          }));
+          : [];
+
+        const avatarList: Avatar[] = messages.slice(0, 3).map((msg) => ({
+          id: msg.id,
+          src: msg.profileImageURL || "",
+          alt: msg.sender,
+        }));
+
         setAvatars(avatarList);
         setTotalWriters(messages.length);
       } catch (err) {
         console.warn("❌ 메시지 목록 불러오기 실패:", err);
       }
     };
+
     fetchMessages();
   }, [recipientId]);
 
@@ -75,23 +94,27 @@ function HeaderService() {
   // =======================================================
   useEffect(() => {
     if (!recipientId) return;
+
     const fetchReactions = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.get<{ results: Reaction[] }>(
           `${BASE_URL}/recipients/${recipientId}/reactions/`
         );
-        const data = res.data;
-        const list = Array.isArray(data) ? data : (data.results ?? []);
-        const normalized: Reaction[] = list.map((r: Reaction) => ({
+
+        const data = Array.isArray(res.data.results) ? res.data.results : [];
+
+        const normalized: Reaction[] = data.map((r) => ({
           id: r.id,
           emoji: r.emoji,
           count: r.count,
         }));
+
         setReactions(normalized);
       } catch (err) {
         console.warn("❌ 리액션 불러오기 실패:", err);
       }
     };
+
     fetchReactions();
   }, [recipientId]);
 
@@ -108,19 +131,20 @@ function HeaderService() {
     }
 
     try {
-      const res = await axios.post(
+      const res = await axios.post<Reaction>(
         `${BASE_URL}/recipients/${recipientId}/reactions/`,
         { emoji: newEmoji, type: "increase" },
         { headers: { "Content-Type": "application/json" } }
       );
 
-      const newReaction: Reaction = res.data;
+      const newReaction = res.data;
+
       setReactions((prev) => {
         const existing = prev.find((r) => r.emoji === newReaction.emoji);
         if (existing) {
           return prev.map((r) =>
             r.emoji === newReaction.emoji
-              ? { ...r, count: newReaction.count, id: newReaction.id ?? r.id }
+              ? { ...r, count: newReaction.count }
               : r
           );
         } else {
@@ -133,17 +157,20 @@ function HeaderService() {
   };
 
   // =======================================================
-  // 5️⃣ 리액션 클릭 (기존 증가)
+  // 5️⃣ 기존 리액션 클릭 시 count 증가
   // =======================================================
   const handleReactionClick = async (emoji: string) => {
     if (!recipientId) return;
+
     try {
-      const res = await axios.post(
+      const res = await axios.post<Reaction>(
         `${BASE_URL}/recipients/${recipientId}/reactions/`,
         { emoji, type: "increase" },
         { headers: { "Content-Type": "application/json" } }
       );
+
       const updated = res.data;
+
       setReactions((prev) =>
         prev.map((r) =>
           r.emoji === updated.emoji ? { ...r, count: updated.count } : r
@@ -155,7 +182,7 @@ function HeaderService() {
   };
 
   // =======================================================
-  // ✅ 렌더링
+  // 렌더링
   // =======================================================
   return (
     <div className="Header service">
@@ -163,7 +190,7 @@ function HeaderService() {
 
       <div className="service__meta">
         <div className="service__avatars">
-          {avatars.slice(0, 3).map((a: Avatar) => (
+          {avatars.map((a) => (
             <ProfileImage
               key={a.id}
               src={a.src}
@@ -182,7 +209,7 @@ function HeaderService() {
         </div>
 
         <div className="service__reactions">
-          {reactions.slice(0, 3).map((r: Reaction, i: number) => (
+          {reactions.slice(0, 3).map((r, i) => (
             <BadgeEmoji
               key={String(r.emoji) + i}
               emoji={r.emoji}
@@ -198,9 +225,10 @@ function HeaderService() {
               onClick={() => setShowReactions((prev) => !prev)}
             />
           )}
+
           {showReactions && (
             <div className="popover popover--reactions">
-              {reactions.map((r: Reaction, i: number) => (
+              {reactions.map((r, i) => (
                 <BadgeEmoji
                   key={String(r.emoji) + i}
                   emoji={r.emoji}
@@ -261,6 +289,6 @@ function HeaderService() {
       </div>
     </div>
   );
-}
+};
 
 export default HeaderService;
