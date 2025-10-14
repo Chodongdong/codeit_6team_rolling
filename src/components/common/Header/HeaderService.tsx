@@ -184,9 +184,8 @@ const HeaderService = ({
         <div className="service__actions service__segment">
           <Button
             variant="outlined"
-            size="md"
-            shape="icon"
-            icon="src/assets/smile.png"
+            size="sm"
+            icon="../src/assets/smile.png"
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
             {" "}
