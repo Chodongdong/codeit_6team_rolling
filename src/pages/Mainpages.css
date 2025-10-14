@@ -18,6 +18,8 @@ body {
   box-sizing: border-box;
   padding-bottom: 246px;
   padding-top: 113px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 /* 안전: 카드가 그리드셀을 넘지 않도록 */
 .card,
@@ -36,6 +38,7 @@ body {
 /* 태블릿*/
 @media (max-width: 768px) {
   .card-grid {
+    width: 100%;
     grid-template-columns: repeat(2, 1fr);
     padding: 93px 24px 91px 24px;
   }
@@ -43,6 +46,7 @@ body {
 /* 모바일*/
 @media (max-width: 360px) {
   .card-grid {
+    width: 100%;
     grid-template-columns: 1fr;
     padding: 24px 20px 38px 20px;
   }
