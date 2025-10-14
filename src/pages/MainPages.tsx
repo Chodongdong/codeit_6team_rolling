@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal";
 import "./MainPages.css";
 
-export type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
+export type BgColor = "beige" | "blue" | "purple" | "green";
 
 interface CardData {
   id: number;
@@ -33,8 +34,8 @@ interface Recipient {
 }
 
 interface MainPagesProps {
-  externalBgColor: BgColor; // 상위 컴포넌트에서 받아온 배경색
-  recipientName: string; // 이름으로 recipient 생성 또는 조회
+  externalBgColor: BgColor;
+  recipientName: string;
 }
 
 const relationshipToBadge = (relationship: string): CardData["badge"] => {
@@ -63,11 +64,11 @@ const formatDate = (dateStr: string) => {
 const API_BASE = "https://rolling-api.vercel.app/19-6";
 const PAGE_SIZE = 6;
 
-const bgColorMap: Record<BgColor, string> = {
-  "#FFE2AD": "beige",
-  "#E0F7FA": "blue",
-  "#F8BBD0": "purple",
-  "#D1C4E9": "green",
+const COLOR_MAP: Record<BgColor, string> = {
+  beige: "#FFF2CC",
+  purple: "#EEDBFF",
+  blue: "#CCE5FF",
+  green: "#D3F4D1",
 };
 
 function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
@@ -80,7 +81,7 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
   const [page, setPage] = useState(0);
   const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
 
-  // recipient 조회 후 없으면 생성하는 함수
+  // recipient 조회 또는 생성 (axios 사용)
   const createOrGetRecipient = useCallback(async () => {
     if (!recipientName || recipientName.trim() === "") {
       console.warn("recipientName이 빈 값입니다. 조회/생성을 건너뜁니다.");
@@ -89,38 +90,34 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
 
     try {
       // 1) 이름으로 recipient 리스트 조회
-      const getRes = await fetch(
-        `${API_BASE}/recipients/?name=${encodeURIComponent(recipientName)}`
-      );
-      if (!getRes.ok) {
-        throw new Error("recipient 조회 실패");
-      }
-      const recipients: Recipient[] = await getRes.json();
+      const getRes = await axios.get<Recipient[]>(`${API_BASE}/recipients/`, {
+        params: { name: recipientName },
+      });
 
-      if (recipients.length > 0) {
-        // 이미 있으면 그 id 사용
-        setRecipientId(recipients[0].id);
-        setBgColor(externalBgColor);
+      if (getRes.data.length > 0) {
+        setRecipientId(getRes.data[0].id);
+
+        // API에서 받은 배경색이 COLOR_MAP에 있는 색상명인지 확인 후 세팅
+        const serverBgColor = getRes.data[0].backgroundColor;
+        if (
+          serverBgColor === "beige" ||
+          serverBgColor === "blue" ||
+          serverBgColor === "purple" ||
+          serverBgColor === "green"
+        ) {
+          setBgColor(serverBgColor);
+        } else {
+          setBgColor(externalBgColor);
+        }
         return;
       }
 
       // 2) 없으면 새로 생성
-      const createRes = await fetch(`${API_BASE}/recipients/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: recipientName,
-          backgroundColor: bgColorMap[externalBgColor],
-        }),
+      const createRes = await axios.post<Recipient>(`${API_BASE}/recipients/`, {
+        name: recipientName,
+        backgroundColor: externalBgColor,
       });
-      if (!createRes.ok) {
-        const errorText = await createRes.text();
-        throw new Error(
-          `recipient 생성 실패: ${createRes.status} ${errorText}`
-        );
-      }
-      const createdRecipient: Recipient = await createRes.json();
-      setRecipientId(createdRecipient.id);
+      setRecipientId(createRes.data.id);
       setBgColor(externalBgColor);
     } catch (error) {
       console.error("recipient 생성/조회 에러:", error);
@@ -132,26 +129,22 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     if (recipientName && recipientName.trim() !== "") {
       createOrGetRecipient();
     } else {
-      // 이름이 없으면 초기화 처리
       setRecipientId(null);
       setCards([]);
       setHasMore(false);
     }
   }, [createOrGetRecipient, recipientName]);
 
-  // recipientId가 세팅되면 메시지 불러오기
+  // recipientId가 세팅되면 메시지 불러오기 (axios)
   useEffect(() => {
     if (!recipientId) return;
 
     const fetchMessages = async () => {
       try {
-        const res = await fetch(
+        const res = await axios.get<ApiMessage[]>(
           `${API_BASE}/recipients/${recipientId}/messages/`
         );
-        if (!res.ok) {
-          throw new Error("메시지 불러오기 실패");
-        }
-        const data: ApiMessage[] = await res.json();
+        const data = res.data;
         setMessagesData(data);
 
         const initialSlice = data.slice(0, PAGE_SIZE).map((msg) => ({
@@ -197,47 +190,69 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     }
   };
 
-  // 배경색 업데이트 PATCH 호출
+  // 배경색 업데이트 PATCH 호출 (axios)
   const updateBackgroundColor = useCallback(
     async (newColor: BgColor) => {
       if (!recipientId) return;
 
       try {
-        const res = await fetch(`${API_BASE}/recipients/${recipientId}/`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            backgroundColor: bgColorMap[newColor],
-          }),
+        console.log("🔧 PATCH 요청 보내는 중:", newColor);
+        await axios.patch(`${API_BASE}/recipients/${recipientId}/`, {
+          backgroundColor: newColor,
         });
-        if (!res.ok) {
-          throw new Error("배경색 업데이트 실패");
-        }
         setBgColor(newColor);
       } catch (err) {
-        console.error(err);
+        console.error("배경색 업데이트 실패:", err);
       }
     },
     [recipientId]
   );
 
-  // externalBgColor 변경시 배경 업데이트
+  // 서버 배경색과 로컬 bgColor 맞추기
   useEffect(() => {
-    if (externalBgColor !== bgColor) {
-      updateBackgroundColor(externalBgColor);
-    }
-  }, [externalBgColor, bgColor, updateBackgroundColor]);
+    const checkAndUpdateBg = async () => {
+      if (!recipientId) return;
+
+      try {
+        const res = await axios.get<Recipient>(
+          `${API_BASE}/recipients/${recipientId}/`
+        );
+        const serverColor = res.data.backgroundColor;
+
+        if (serverColor !== bgColor) {
+          if (
+            serverColor === "beige" ||
+            serverColor === "blue" ||
+            serverColor === "purple" ||
+            serverColor === "green"
+          ) {
+            setBgColor(serverColor);
+          } else {
+            await updateBackgroundColor(bgColor);
+          }
+        }
+      } catch (err) {
+        console.error("배경색 체크 중 에러:", err);
+      }
+    };
+
+    checkAndUpdateBg();
+  }, [recipientId, bgColor, updateBackgroundColor]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedCard(null);
   };
 
+  // 디버깅 로그
+  console.log("현재 bgColor:", bgColor);
+  console.log("매핑된 색상 코드:", COLOR_MAP[bgColor]);
+
   return (
     <div
       className="mainpages-container"
       style={{
-        backgroundColor: bgColor,
+        backgroundColor: COLOR_MAP[bgColor],
         overflowX: "hidden",
       }}
     >
