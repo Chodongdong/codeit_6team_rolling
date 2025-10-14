@@ -1,8 +1,8 @@
 // src/pages/MainHome.tsx
-import { useNavigate } from 'react-router-dom';
-import './MainHome.css';
-import img01 from '../assets/img_01.png';
-import img02 from '../assets/img_02.png';
+import { useNavigate } from "react-router-dom";
+import "./MainHome.css";
+import img01 from "../assets/img_01.png";
+import img02 from "../assets/img_02.png";
 
 export default function MainHome() {
   const nav = useNavigate();
@@ -42,13 +42,15 @@ export default function MainHome() {
               <br />
               표현해보세요
             </h2>
-            <p className="desc">롤링 페이퍼에 이모지를 추가하고 반응을 모아보세요.</p>
+            <p className="desc">
+              롤링 페이퍼에 이모지를 추가하고 반응을 모아보세요.
+            </p>
           </div>
         </div>
       </section>
 
       <div className="cta-wrap">
-        <button className="cta" type="button" onClick={() => nav('/list')}>
+        <button className="cta" type="button" onClick={() => nav("/list")}>
           구경해보기
         </button>
       </div>
