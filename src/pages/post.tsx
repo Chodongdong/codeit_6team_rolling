@@ -3,9 +3,10 @@ import axios from "axios";
 import ToggleButton from "../components/common/ToggleButton/ToggleButton";
 import Input from "../components/common/Input/Input";
 import "./Post.css";
+import { useNavigate } from "react-router-dom";
 
 /**
- *  Post.tsx 
+ *  Post.tsx
  * - fetch → axios 통일
  */
 
@@ -27,7 +28,8 @@ const Post: React.FC = () => {
   const [selected, setSelected] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [recipientName, setRecipientName] = useState<string>(""); 
+  const [recipientName, setRecipientName] = useState<string>("");
+  const navigate = useNavigate();
 
   /**
    * 배경 이미지 불러오기 (axios로 통일)
@@ -77,8 +79,8 @@ const Post: React.FC = () => {
       const recipientPayload = {
         team: TEAM_NAME,
         name,
-        backgroundColor: mode === "컬러" ? COLORS[selected] : COLORS[0], 
-        backgroundImageURL: mode === "이미지" ? imageUrls[selected] : "",
+        backgroundColor: mode === "컬러" ? COLORS[selected] : COLORS[0],
+        backgroundImageUrl: mode === "이미지" ? imageUrls[selected] : "",
       };
 
       const recipientRes = await axios.post(
@@ -107,9 +109,14 @@ const Post: React.FC = () => {
 
       console.log("✅ 메시지 등록 완료:", messageRes.data);
       alert(`🎉 롤링페이퍼 생성 완료!\nID: ${recipientId}`);
+
+      navigate(`/post/${recipientId}`);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error("❌ 생성 중 오류:", error.response?.data || error.message);
+        console.error(
+          "❌ 생성 중 오류:",
+          error.response?.data || error.message
+        );
         alert(`오류 발생:\n${JSON.stringify(error.response?.data, null, 2)}`);
       } else {
         alert("롤링페이퍼 생성 중 오류가 발생했습니다.");
@@ -151,39 +158,43 @@ const Post: React.FC = () => {
 
         {/* 배경 선택 */}
         <div className="select-grid">
-          {mode === "컬러"
-            ? COLORS.map((color, idx) => (
-                <div
-                  key={idx}
-                  className={`select-box ${selected === idx ? "selected" : ""}`}
-                  style={{ backgroundColor: COLOR_MAP[color] }}
-                  onClick={() => setSelected(idx)}
-                >
-                  {selected === idx && <div className="check-icon">✓</div>}
-                </div>
-              ))
-            : imageUrls.length > 0 ? (
-                imageUrls.map((url, idx) => (
-                  <div
-                    key={idx}
-                    className={`select-box ${selected === idx ? "selected" : ""}`}
-                    onClick={() => setSelected(idx)}
-                  >
-                    <img src={url} alt={`bg-${idx}`} className="image-thumb" />
-                    {selected === idx && (
-                      <div className="check-overlay">
-                        <div className="check-icon">✓</div>
-                      </div>
-                    )}
+          {mode === "컬러" ? (
+            COLORS.map((color, idx) => (
+              <div
+                key={idx}
+                className={`select-box ${selected === idx ? "selected" : ""}`}
+                style={{ backgroundColor: COLOR_MAP[color] }}
+                onClick={() => setSelected(idx)}
+              >
+                {selected === idx && <div className="check-icon">✓</div>}
+              </div>
+            ))
+          ) : imageUrls.length > 0 ? (
+            imageUrls.map((url, idx) => (
+              <div
+                key={idx}
+                className={`select-box ${selected === idx ? "selected" : ""}`}
+                onClick={() => setSelected(idx)}
+              >
+                <img src={url} alt={`bg-${idx}`} className="image-thumb" />
+                {selected === idx && (
+                  <div className="check-overlay">
+                    <div className="check-icon">✓</div>
                   </div>
-                ))
-              ) : (
-                <p>🌀 배경 이미지를 불러오는 중...</p>
-              )}
+                )}
+              </div>
+            ))
+          ) : (
+            <p>🌀 배경 이미지를 불러오는 중...</p>
+          )}
         </div>
 
         {/* 생성 버튼 */}
-        <button className="create-btn" onClick={handleCreate} disabled={loading}>
+        <button
+          className="create-btn"
+          onClick={handleCreate}
+          disabled={loading}
+        >
           {loading ? "생성 중..." : "생성하기"}
         </button>
       </div>
