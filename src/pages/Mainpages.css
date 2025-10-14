@@ -40,7 +40,7 @@ body {
   .card-grid {
     width: 100%;
     grid-template-columns: repeat(2, 1fr);
-    padding: 93px 24px 91px 24px;
+    padding: 93px, 24px, 91px, 24px;
   }
 }
 /* 모바일*/
@@ -48,6 +48,6 @@ body {
   .card-grid {
     width: 100%;
     grid-template-columns: 1fr;
-    padding: 24px 20px 38px 20px;
+    padding: 32px, 20px, 38px, 20px;
   }
 }
