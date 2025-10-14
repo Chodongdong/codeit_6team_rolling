@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import BadgeEmoji from "../BadgeEmoji/BadgeEmoji";
 import Button from "../buttons/button";
 import ProfileImage from "../Option/ProfileImage";
-import type { HeaderProps, Reaction, Avatar } from "./Header.types";
+import type { Reaction, Avatar } from "./Header.types";
 import { shareIcon } from "../../../assets/index";
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
@@ -12,33 +12,76 @@ import { useParams } from "react-router-dom";
 
 const BASE_URL = "https://rolling-api.vercel.app/19-6";
 
-const HeaderService = ({
-  recipient = "수취인",
-  avatars = [],
-  totalWriters = 0,
-  reactions: initialReactions = [],
-}: HeaderProps) => {
+function HeaderService() {
   const params = useParams();
   const recipientId = Number(params.id);
 
-  const [reactions, setReactions] = useState<Reaction[]>(initialReactions);
-  const [showReactions, setShowReactions] = useState(false); // 공감 확장 팝오버
-  const [showShare, setShowShare] = useState(false); // 공유 팝오버
+  // ✅ 상태값
+  const [recipientName, setRecipientName] = useState("수취인");
+  const [avatars, setAvatars] = useState<Avatar[]>([]);
+  const [totalWriters, setTotalWriters] = useState(0);
+  const [reactions, setReactions] = useState<Reaction[]>([]);
+  const [showReactions, setShowReactions] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  // 컴포넌트 마운트 시 GET요청으로 초기 리액션 로드
+  // =======================================================
+  // 1️⃣ 수취인 정보 불러오기
+  // =======================================================
   useEffect(() => {
     if (!recipientId) return;
+    const fetchRecipient = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/recipients/${recipientId}/`);
+        setRecipientName(res.data.name || "수취인");
+      } catch (err) {
+        console.warn("❌ 수취인 불러오기 실패:", err);
+      }
+    };
+    fetchRecipient();
+  }, [recipientId]);
 
+  // =======================================================
+  // 2️⃣ 작성자 목록 불러오기
+  // =======================================================
+  useEffect(() => {
+    if (!recipientId) return;
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/recipients/${recipientId}/messages/`
+        );
+        const messages = Array.isArray(res.data.results)
+          ? res.data.results
+          : res.data;
+        const avatarList: Avatar[] = messages
+          .slice(0, 3)
+          .map((msg: any, idx: number) => ({
+            id: msg.id ?? idx,
+            src: msg.profileImageURL,
+            alt: msg.sender,
+          }));
+        setAvatars(avatarList);
+        setTotalWriters(messages.length);
+      } catch (err) {
+        console.warn("❌ 메시지 목록 불러오기 실패:", err);
+      }
+    };
+    fetchMessages();
+  }, [recipientId]);
+
+  // =======================================================
+  // 3️⃣ 리액션 불러오기
+  // =======================================================
+  useEffect(() => {
+    if (!recipientId) return;
     const fetchReactions = async () => {
       try {
         const res = await axios.get(
           `${BASE_URL}/recipients/${recipientId}/reactions/`
         );
-        // 스웨거 응답: { results: [ {id, emoji, count}, ... ], ... } 또는 직접 배열일 수 있음
         const data = res.data;
         const list = Array.isArray(data) ? data : (data.results ?? []);
-        // 서버가 emoji 필드명/형식을 어떻게 주는지 확인 필요 — 여기선 emoji, count 기대
         const normalized: Reaction[] = list.map((r: Reaction) => ({
           id: r.id,
           emoji: r.emoji,
@@ -46,14 +89,15 @@ const HeaderService = ({
         }));
         setReactions(normalized);
       } catch (err) {
-        console.warn("리액션 불러오기 실패:", err);
+        console.warn("❌ 리액션 불러오기 실패:", err);
       }
     };
-
     fetchReactions();
   }, [recipientId]);
 
-  // 이모지 클릭 -> POST -> UI 업데이트
+  // =======================================================
+  // 4️⃣ 이모지 추가 핸들러
+  // =======================================================
   const handleEmojiClick = async (emojiData: EmojiClickData) => {
     const newEmoji = emojiData.emoji;
     setShowEmojiPicker(false);
@@ -66,17 +110,11 @@ const HeaderService = ({
     try {
       const res = await axios.post(
         `${BASE_URL}/recipients/${recipientId}/reactions/`,
-        {
-          emoji: newEmoji,
-          type: "increase",
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { emoji: newEmoji, type: "increase" },
+        { headers: { "Content-Type": "application/json" } }
       );
 
       const newReaction: Reaction = res.data;
-
       setReactions((prev) => {
         const existing = prev.find((r) => r.emoji === newReaction.emoji);
         if (existing) {
@@ -86,35 +124,26 @@ const HeaderService = ({
               : r
           );
         } else {
-          return [
-            ...prev,
-            {
-              id: newReaction.id,
-              emoji: newReaction.emoji,
-              count: newReaction.count,
-            },
-          ];
+          return [...prev, newReaction];
         }
       });
     } catch (error) {
       console.error("이모지 추가 실패:", error);
-      alert("이모지 추가 중 오류가 발생했습니다.");
     }
   };
 
-  // 이미 존재하는 이모지 클릭 시 -> count 증가
+  // =======================================================
+  // 5️⃣ 리액션 클릭 (기존 증가)
+  // =======================================================
   const handleReactionClick = async (emoji: string) => {
     if (!recipientId) return;
-
     try {
       const res = await axios.post(
         `${BASE_URL}/recipients/${recipientId}/reactions/`,
         { emoji, type: "increase" },
         { headers: { "Content-Type": "application/json" } }
       );
-
       const updated = res.data;
-
       setReactions((prev) =>
         prev.map((r) =>
           r.emoji === updated.emoji ? { ...r, count: updated.count } : r
@@ -125,9 +154,12 @@ const HeaderService = ({
     }
   };
 
+  // =======================================================
+  // ✅ 렌더링
+  // =======================================================
   return (
     <div className="Header service">
-      <div className="service__recipient">To. {recipient}</div>
+      <div className="service__recipient">To. {recipientName}</div>
 
       <div className="service__meta">
         <div className="service__avatars">
@@ -166,7 +198,6 @@ const HeaderService = ({
               onClick={() => setShowReactions((prev) => !prev)}
             />
           )}
-
           {showReactions && (
             <div className="popover popover--reactions">
               {reactions.map((r: Reaction, i: number) => (
@@ -188,8 +219,7 @@ const HeaderService = ({
             icon="../src/assets/smile.png"
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
-            {" "}
-            추가{" "}
+            추가
           </Button>
 
           {showEmojiPicker && (
@@ -231,6 +261,6 @@ const HeaderService = ({
       </div>
     </div>
   );
-};
+}
 
 export default HeaderService;
