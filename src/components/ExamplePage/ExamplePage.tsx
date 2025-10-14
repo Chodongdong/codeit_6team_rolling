@@ -21,11 +21,7 @@ export default function ExamplePage() {
       <PlusButton onClick={handleOpenModal} />
 
       {/* 모달 */}
-      <MessageModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        messageId="123"
-      />
+      <MessageModal isOpen={isModalOpen} onClose={handleCloseModal} />
     </>
   );
 }
