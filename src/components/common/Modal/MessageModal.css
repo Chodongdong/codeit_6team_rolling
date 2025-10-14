@@ -1,15 +1,14 @@
 .message-modal {
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* 내부 스크롤 가능 */
+  overflow: hidden;
   border-radius: 16px;
   background: #fff;
-  padding: 40px; /* 기존 width 대신 내부 여백으로 조정 */
-  max-width: 600px; /* 필요시 최대 너비만 지정 */
-  box-sizing: border-box;
+  padding: 40px;
+  max-width: 600px;
   width: 500px;
-  height: 240px;
-  flex-shrink: 0;
+  max-height: 80vh; /* 화면 비율 기준 최대 높이 */
+  box-sizing: border-box;
 }
 
 /* 모달 헤더 */
@@ -20,10 +19,11 @@
   padding-bottom: 20px;
   border-bottom: 1px solid var(--gray-200, #eee);
 }
+
 .left {
   display: flex;
   align-items: center;
-  gap: 16px; /* 프로필과 info 사이 간격 */
+  gap: 16px;
 }
 
 .profile-img {
@@ -69,42 +69,33 @@
   font-family: Pretendard;
 }
 
-/* 모달 바디: 메시지 입력 */
+/* 모달 바디 */
 .modal-body {
   padding: 16px 0;
   flex: 1;
+  overflow-y: auto;
+  max-height: 300px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.message-input {
-  overflow-y: scroll;
-  width: 500px;
-  height: 240px;
-  flex-shrink: 0;
-  margin: 0 auto;
+/* 메시지 텍스트 */
+.message-text {
+  white-space: pre-wrap; /* 줄바꿈(\n) 적용 */
+  word-break: break-word; /* 너무 긴 단어 줄바꿈 */
+  overflow-wrap: break-word;
   color: #5a5a5a;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
   line-height: 28px;
   letter-spacing: -0.18px;
-  border: none;
-  outline: none;
-  background: var(--white, #fff);
-}
-.message-input::-webkit-scrollbar {
-  width: 4px;
-  flex-shrink: 0;
+  font-family: Pretendard;
+  width: 100%;
 }
 
-.message-input::-webkit-scrollbar-thumb {
-  border-radius: 8px;
-  background: var(--gray-300, #ccc);
-}
-
-/* 모달 푸터: 버튼 중앙 정렬 */
+/* 모달 푸터 */
 .modal-footer {
   display: flex;
   padding: 7px 16px;
@@ -118,6 +109,7 @@
   line-height: 26px;
   letter-spacing: -0.16px;
 }
+
 .modal-footer button {
   display: flex;
   width: 120px;
@@ -127,4 +119,6 @@
   gap: 10px;
   border-radius: 6px;
   background: var(--Purple-600, #9935ff);
+  color: #fff;
+  font-weight: 600;
 }

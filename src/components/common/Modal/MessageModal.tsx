@@ -46,7 +46,7 @@ export default function MessageModal({
 
         <div className="modal-body">
           {/* 읽기 전용 텍스트 표시 */}
-          <p className="message-text">{card.message}</p>
+          <p className="message-text">{card.message?.replace(/<\/?p>/g, "")}</p>
         </div>
 
         <div className="modal-footer">
