@@ -79,7 +79,7 @@ function Card({
       </div>
 
       {/* 본문 */}
-      <div className="card-body">{message}</div>
+      <div className="card-body">{message?.replace(/<\/?p>/g, "")}</div>
 
       {/* 날짜 */}
       <div className="card-footer">{date}</div>
