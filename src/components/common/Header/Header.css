@@ -131,3 +131,12 @@
 .popover__item:hover {
   background-color: #f5f5f5;
 }
+
+.emoji-picker-wrapper {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
