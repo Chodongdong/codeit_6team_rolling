@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 // ✅ 공용 컴포넌트
-import Header from "../components/common/Header/Header";
 import Dropdown from "../components/common/Dropdown/Dropdown";
 import Button from "../components/common/buttons/button";
 import Input from "../components/common/Input/Input";
@@ -199,7 +198,6 @@ export default function PostMessagePage() {
   // =======================================================
   return (
     <div className="post-message-page">
-      <Header />
       <main className="post-message-container">
         <form className="message-form" onSubmit={handleSubmit}>
           {/* From */}
