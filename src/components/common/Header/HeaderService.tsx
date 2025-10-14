@@ -186,7 +186,7 @@ const HeaderService = ({
             variant="outlined"
             size="md"
             shape="icon"
-            icon="src/assets/smile.png"
+            icon="../src/assets/smile.png"
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
             {" "}

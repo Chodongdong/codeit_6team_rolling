@@ -6,15 +6,14 @@ import HeaderBasic from "../Header/HeaderBasic"; // 로고만 있는 헤더
 import HeaderService from "../Header/HeaderService"; // 서비스 헤더 (ex. 리액션, 공유버튼 등)
 
 function Layout() {
-  const location = useLocation();
-  const path = location.pathname;
+  const { pathname } = useLocation();
 
   // 페이지 구분
-  const isMainPage = path === "/";
-  const isListPage = path === "/list";
-  const isPostPage = /^\/post\/[^/]+$/.test(path); // /post/:id
-  const isMessagePage = /^\/post\/[^/]+\/message$/.test(path);
-  const isCreatePage = path === "/post";
+  const isMainPage = pathname === "/";
+  const isListPage = pathname.startsWith("/list");
+  const isCreatePage = pathname === "/post";
+  const isPostPage = /^\/post\/[^/]+$/.test(pathname); // /post/:id
+  const isMessagePage = /^\/post\/[^/]+\/message$/.test(pathname);
 
   // Header 결정
   let HeaderComponent = null;
