@@ -4,10 +4,8 @@ import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal";
 import "./MainPages.css";
 
-// 배경색 유니온 타입
-type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
+export type BgColor = "#FFE2AD" | "#E0F7FA" | "#F8BBD0" | "#D1C4E9";
 
-// 카드 데이터 타입
 interface CardData {
   id: number;
   author: string;
@@ -17,7 +15,6 @@ interface CardData {
   avatarUrl: string;
 }
 
-// API 메시지 타입
 interface ApiMessage {
   id: number;
   recipientId: number;
@@ -29,13 +26,17 @@ interface ApiMessage {
   createdAt: string;
 }
 
-// MainPages 컴포넌트 props 타입
-interface MainPagesProps {
-  initialBgColor?: BgColor;
-  recipientId: number; // 꼭 받아야 함, 메시지 조회할 대상 ID
+interface Recipient {
+  id: number;
+  name: string;
+  backgroundColor: string;
 }
 
-// 관계 문자열 → badge 매핑 함수
+interface MainPagesProps {
+  externalBgColor: BgColor; // 상위 컴포넌트에서 받아온 배경색
+  recipientName: string; // 이름으로 recipient 생성 또는 조회
+}
+
 const relationshipToBadge = (relationship: string): CardData["badge"] => {
   switch (relationship) {
     case "친구":
@@ -51,7 +52,6 @@ const relationshipToBadge = (relationship: string): CardData["badge"] => {
   }
 };
 
-// 날짜 포맷 함수 (YYYY-MM-DD → YYYY.MM.DD)
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
   const y = date.getFullYear();
@@ -61,23 +61,88 @@ const formatDate = (dateStr: string) => {
 };
 
 const API_BASE = "https://rolling-api.vercel.app/19-6";
-
 const PAGE_SIZE = 6;
 
-function MainPages({
-  initialBgColor = "#FFE2AD",
-  recipientId,
-}: MainPagesProps) {
+const bgColorMap: Record<BgColor, string> = {
+  "#FFE2AD": "beige",
+  "#E0F7FA": "blue",
+  "#F8BBD0": "purple",
+  "#D1C4E9": "green",
+};
+
+function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
+  const [recipientId, setRecipientId] = useState<number | null>(null);
   const [cards, setCards] = useState<CardData[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const [bgColor, setBgColor] = useState<BgColor>(initialBgColor);
+  const [bgColor, setBgColor] = useState<BgColor>(externalBgColor);
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
 
-  // 메시지 전체 데이터 한 번만 fetch
+  // recipient 조회 후 없으면 생성하는 함수
+  const createOrGetRecipient = useCallback(async () => {
+    if (!recipientName || recipientName.trim() === "") {
+      console.warn("recipientName이 빈 값입니다. 조회/생성을 건너뜁니다.");
+      return;
+    }
+
+    try {
+      // 1) 이름으로 recipient 리스트 조회
+      const getRes = await fetch(
+        `${API_BASE}/recipients/?name=${encodeURIComponent(recipientName)}`
+      );
+      if (!getRes.ok) {
+        throw new Error("recipient 조회 실패");
+      }
+      const recipients: Recipient[] = await getRes.json();
+
+      if (recipients.length > 0) {
+        // 이미 있으면 그 id 사용
+        setRecipientId(recipients[0].id);
+        setBgColor(externalBgColor);
+        return;
+      }
+
+      // 2) 없으면 새로 생성
+      const createRes = await fetch(`${API_BASE}/recipients/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: recipientName,
+          backgroundColor: bgColorMap[externalBgColor],
+        }),
+      });
+      if (!createRes.ok) {
+        const errorText = await createRes.text();
+        throw new Error(
+          `recipient 생성 실패: ${createRes.status} ${errorText}`
+        );
+      }
+      const createdRecipient: Recipient = await createRes.json();
+      setRecipientId(createdRecipient.id);
+      setBgColor(externalBgColor);
+    } catch (error) {
+      console.error("recipient 생성/조회 에러:", error);
+    }
+  }, [externalBgColor, recipientName]);
+
+  // recipient 생성/조회 트리거
   useEffect(() => {
+    if (recipientName && recipientName.trim() !== "") {
+      createOrGetRecipient();
+    } else {
+      // 이름이 없으면 초기화 처리
+      setRecipientId(null);
+      setCards([]);
+      setHasMore(false);
+    }
+  }, [createOrGetRecipient, recipientName]);
+
+  // recipientId가 세팅되면 메시지 불러오기
+  useEffect(() => {
+    if (!recipientId) return;
+
     const fetchMessages = async () => {
       try {
         const res = await fetch(
@@ -88,7 +153,7 @@ function MainPages({
         }
         const data: ApiMessage[] = await res.json();
         setMessagesData(data);
-        // 첫 페이지 메시지 세팅
+
         const initialSlice = data.slice(0, PAGE_SIZE).map((msg) => ({
           id: msg.id,
           author: msg.sender,
@@ -97,16 +162,16 @@ function MainPages({
           badge: relationshipToBadge(msg.relationship),
           avatarUrl: msg.profileImageURL,
         }));
+
         setCards(initialSlice);
         setPage(1);
-        if (data.length <= PAGE_SIZE) {
-          setHasMore(false);
-        }
+        setHasMore(data.length > PAGE_SIZE);
       } catch (err) {
         console.error("fetchMessages error:", err);
         setHasMore(false);
       }
     };
+
     fetchMessages();
   }, [recipientId]);
 
@@ -132,22 +197,15 @@ function MainPages({
     }
   };
 
-  // 배경색 변경 API 호출 함수 (useCallback으로 메모이제이션)
+  // 배경색 업데이트 PATCH 호출
   const updateBackgroundColor = useCallback(
     async (newColor: BgColor) => {
-      const bgColorMap: Record<BgColor, string> = {
-        "#FFE2AD": "beige",
-        "#E0F7FA": "blue",
-        "#F8BBD0": "purple",
-        "#D1C4E9": "green",
-      };
+      if (!recipientId) return;
 
       try {
         const res = await fetch(`${API_BASE}/recipients/${recipientId}/`, {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             backgroundColor: bgColorMap[newColor],
           }),
@@ -155,7 +213,7 @@ function MainPages({
         if (!res.ok) {
           throw new Error("배경색 업데이트 실패");
         }
-        setBgColor(newColor); // 실제 배경색 상태 변경
+        setBgColor(newColor);
       } catch (err) {
         console.error(err);
       }
@@ -163,10 +221,12 @@ function MainPages({
     [recipientId]
   );
 
-  // 컴포넌트 마운트 시 초기 배경색으로 API에 업데이트
+  // externalBgColor 변경시 배경 업데이트
   useEffect(() => {
-    updateBackgroundColor(bgColor);
-  }, [bgColor, updateBackgroundColor]);
+    if (externalBgColor !== bgColor) {
+      updateBackgroundColor(externalBgColor);
+    }
+  }, [externalBgColor, bgColor, updateBackgroundColor]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -178,8 +238,6 @@ function MainPages({
       className="mainpages-container"
       style={{
         backgroundColor: bgColor,
-        minHeight: "100vh",
-        width: "100vw",
         overflowX: "hidden",
       }}
     >
