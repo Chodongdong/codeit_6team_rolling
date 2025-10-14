@@ -81,7 +81,7 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
   const [page, setPage] = useState(0);
   const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
 
-  // recipient 조회 또는 생성 (axios 사용)
+  // recipient 조회 또는 생성
   const createOrGetRecipient = useCallback(async () => {
     if (!recipientName || recipientName.trim() === "") {
       console.warn("recipientName이 빈 값입니다. 조회/생성을 건너뜁니다.");
@@ -89,7 +89,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     }
 
     try {
-      // 1) 이름으로 recipient 리스트 조회
       const getRes = await axios.get<Recipient[]>(`${API_BASE}/recipients/`, {
         params: { name: recipientName },
       });
@@ -97,7 +96,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
       if (getRes.data.length > 0) {
         setRecipientId(getRes.data[0].id);
 
-        // API에서 받은 배경색이 COLOR_MAP에 있는 색상명인지 확인 후 세팅
         const serverBgColor = getRes.data[0].backgroundColor;
         if (
           serverBgColor === "beige" ||
@@ -112,7 +110,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
         return;
       }
 
-      // 2) 없으면 새로 생성
       const createRes = await axios.post<Recipient>(`${API_BASE}/recipients/`, {
         name: recipientName,
         backgroundColor: externalBgColor,
@@ -124,7 +121,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     }
   }, [externalBgColor, recipientName]);
 
-  // recipient 생성/조회 트리거
   useEffect(() => {
     if (recipientName && recipientName.trim() !== "") {
       createOrGetRecipient();
@@ -135,19 +131,39 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     }
   }, [createOrGetRecipient, recipientName]);
 
-  // recipientId가 세팅되면 메시지 불러오기 (axios)
+  // 메시지 불러오기
   useEffect(() => {
     if (!recipientId) return;
 
     const fetchMessages = async () => {
       try {
-        const res = await axios.get<ApiMessage[]>(
+        const res = await axios.get(
           `${API_BASE}/recipients/${recipientId}/messages/`
         );
-        const data = res.data;
-        setMessagesData(data);
+        console.log("메시지 API 응답:", res.data);
 
-        const initialSlice = data.slice(0, PAGE_SIZE).map((msg) => ({
+        // 방어 코드: 응답이 배열인지 아니면 객체인지 체크
+        let dataArr: ApiMessage[];
+
+        if (Array.isArray(res.data)) {
+          dataArr = res.data;
+        } else if (
+          "messages" in res.data &&
+          Array.isArray((res.data as any).messages)
+        ) {
+          dataArr = (res.data as any).messages;
+        } else {
+          console.error(
+            "응답이 배열도 아니고 messages 필드도 없습니다:",
+            res.data
+          );
+          dataArr = [];
+        }
+
+        setMessagesData(dataArr);
+
+        // 초기 슬라이스
+        const initialSlice = dataArr.slice(0, PAGE_SIZE).map((msg) => ({
           id: msg.id,
           author: msg.sender,
           message: msg.content,
@@ -158,7 +174,7 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
 
         setCards(initialSlice);
         setPage(1);
-        setHasMore(data.length > PAGE_SIZE);
+        setHasMore(dataArr.length > PAGE_SIZE);
       } catch (err) {
         console.error("fetchMessages error:", err);
         setHasMore(false);
@@ -168,7 +184,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     fetchMessages();
   }, [recipientId]);
 
-  // 추가 메시지 불러오기
   const fetchMoreCards = () => {
     const start = page * PAGE_SIZE;
     const nextSlice = messagesData
@@ -190,7 +205,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     }
   };
 
-  // 배경색 업데이트 PATCH 호출 (axios)
   const updateBackgroundColor = useCallback(
     async (newColor: BgColor) => {
       if (!recipientId) return;
@@ -208,7 +222,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     [recipientId]
   );
 
-  // 서버 배경색과 로컬 bgColor 맞추기
   useEffect(() => {
     const checkAndUpdateBg = async () => {
       if (!recipientId) return;
@@ -244,7 +257,6 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
     setSelectedCard(null);
   };
 
-  // 디버깅 로그
   console.log("현재 bgColor:", bgColor);
   console.log("매핑된 색상 코드:", COLOR_MAP[bgColor]);
 
