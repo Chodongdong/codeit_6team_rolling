@@ -1,0 +1,111 @@
+/* ============================
+   📌 기본 페이지 레이아웃
+============================ */
+.post-message-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-message-container {
+  max-width: 720px;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding-bottom: 38px;
+  font: "Font / 24 Bold";
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ============================
+   👤 프로필 이미지 영역 (피그마 반영)
+============================ */
+
+/* 전체 컨테이너 */
+.profile-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px; /* 기본 이미지와 오른쪽 영역 간격 */
+  width: 100%;
+}
+
+/* 왼쪽: 기본 프로필 이미지 */
+.profile-item-large {
+  border-radius: 100%;
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+}
+.profile-item-large img {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+}
+
+/* 오른쪽: 텍스트 + 서버 이미지 리스트 */
+.profile-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* 문구와 이미지 간격 */
+}
+
+/* 안내 문구 */
+.profile-hint {
+  color: var(--gray-500);
+  font-size: var(--fs-14);
+  margin: 0;
+  text-align: left;
+}
+
+/* 서버 이미지 리스트 */
+.profile-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 서버 이미지 공통 스타일 */
+.profile-item {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+.profile-item img {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+}
+
+/* hover 효과 */
+.profile-item:hover {
+  transform: scale(1.05);
+}
+
+/* 선택된 이미지 강조 */
+.profile-item.selected {
+  transform: scale(1.08);
+}
+
+/* ============================
+   ✏️ 기타 공통 스타일
+============================ */
+.full-width-btn {
+  width: 100%;
+}
+
+.ql-container {
+  min-height: 200px;
+  border-radius: 8px;
+}
