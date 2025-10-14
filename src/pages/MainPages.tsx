@@ -4,6 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal";
 import "./MainPages.css";
+import { useNavigate } from "react-router-dom";
 
 export type BgColor = "beige" | "blue" | "purple" | "green";
 
@@ -36,6 +37,7 @@ interface Recipient {
 interface MainPagesProps {
   externalBgColor: BgColor;
   recipientName: string;
+  recipientId?: number;
 }
 
 const relationshipToBadge = (relationship: string): CardData["badge"] => {
@@ -80,6 +82,7 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
+  const navigate = useNavigate();
 
   // recipient 조회 또는 생성 (axios 사용)
   const createOrGetRecipient = useCallback(async () => {
@@ -263,8 +266,16 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
         loader={<h4>Loading...</h4>}
         className="card-grid"
       >
-        <Card type="plus" onAdd={() => console.log("메시지 창으로 이동")} />
-
+        <Card
+          type="plus"
+          onAdd={() => {
+            if (recipientId) {
+              navigate(`/post/${recipientId}/message`);
+            } else {
+              console.warn("recipientId가 아직 없습니다.");
+            }
+          }}
+        />
         {cards
           .slice()
           .sort((a, b) => b.id - a.id)
