@@ -92,22 +92,7 @@ const Post: React.FC = () => {
       console.log("✅ Recipient 생성 완료:", recipientRes.data);
 
       // message 생성 payload
-      const messagePayload = {
-        team: TEAM_NAME,
-        recipientId,
-        sender: "강호동",
-        profileImageURL: "https://example.com/profile1.png",
-        relationship: "친구",
-        content: `To. ${name}님 🎉 축하드립니다!`,
-        font: "Pretendard",
-      };
-
-      const messageRes = await axios.post(
-        `${BASE_URL}/${TEAM_NAME}/recipients/${recipientId}/messages/`,
-        messagePayload
-      );
-
-      console.log("✅ 메시지 등록 완료:", messageRes.data);
+      
       alert(`🎉 롤링페이퍼 생성 완료!\nID: ${recipientId}`);
 
       navigate(`/post/${recipientId}`);
