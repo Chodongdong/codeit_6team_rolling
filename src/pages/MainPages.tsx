@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal";
 import "./MainPages.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export type BgColor = "beige" | "blue" | "purple" | "green";
 
@@ -19,7 +19,6 @@ interface CardData {
 
 interface ApiMessage {
   id: number;
-  recipientId: number;
   sender: string;
   profileImageURL: string;
   relationship: "친구" | "지인" | "동료" | "가족";
@@ -34,11 +33,22 @@ interface Recipient {
   backgroundColor: string;
 }
 
-interface MainPagesProps {
-  externalBgColor: BgColor;
-  recipientName: string;
-  recipientId?: number;
+interface ApiMessageResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ApiMessage[];
 }
+
+const API_BASE = "https://rolling-api.vercel.app/19-6";
+const PAGE_SIZE = 6;
+
+const COLOR_MAP: Record<BgColor, string> = {
+  beige: "#FFF2CC",
+  purple: "#EEDBFF",
+  blue: "#CCE5FF",
+  green: "#D3F4D1",
+};
 
 const relationshipToBadge = (relationship: string): CardData["badge"] => {
   switch (relationship) {
@@ -57,100 +67,60 @@ const relationshipToBadge = (relationship: string): CardData["badge"] => {
 
 const formatDate = (dateStr: string) => {
   const date = new Date(dateStr);
-  const y = date.getFullYear();
-  const m = ("0" + (date.getMonth() + 1)).slice(-2);
-  const d = ("0" + date.getDate()).slice(-2);
-  return `${y}.${m}.${d}`;
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(
+    date.getDate()
+  ).padStart(2, "0")}`;
 };
 
-const API_BASE = "https://rolling-api.vercel.app/19-6";
-const PAGE_SIZE = 6;
-
-const COLOR_MAP: Record<BgColor, string> = {
-  beige: "#FFF2CC",
-  purple: "#EEDBFF",
-  blue: "#CCE5FF",
-  green: "#D3F4D1",
-};
-
-function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
-  const [recipientId, setRecipientId] = useState<number | null>(null);
-  const [cards, setCards] = useState<CardData[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [bgColor, setBgColor] = useState<BgColor>(externalBgColor);
-  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [page, setPage] = useState(0);
-  const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
+function MainPages() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // recipient 조회 또는 생성 (axios 사용)
-  const createOrGetRecipient = useCallback(async () => {
-    if (!recipientName || recipientName.trim() === "") {
-      console.warn("recipientName이 빈 값입니다. 조회/생성을 건너뜁니다.");
-      return;
-    }
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
+  const [cards, setCards] = useState<CardData[]>([]);
+  const [messagesData, setMessagesData] = useState<ApiMessage[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const bgColor: BgColor =
+    recipient?.backgroundColor === "blue" ||
+    recipient?.backgroundColor === "purple" ||
+    recipient?.backgroundColor === "green" ||
+    recipient?.backgroundColor === "beige"
+      ? recipient.backgroundColor
+      : "beige";
+
+  // ✅ recipient 정보 불러오기
+  const fetchRecipient = useCallback(async () => {
+    if (!id) return;
 
     try {
-      // 1) 이름으로 recipient 리스트 조회
-      const getRes = await axios.get<Recipient[]>(`${API_BASE}/recipients/`, {
-        params: { name: recipientName },
-      });
-
-      if (getRes.data.length > 0) {
-        setRecipientId(getRes.data[0].id);
-
-        // API에서 받은 배경색이 COLOR_MAP에 있는 색상명인지 확인 후 세팅
-        const serverBgColor = getRes.data[0].backgroundColor;
-        if (
-          serverBgColor === "beige" ||
-          serverBgColor === "blue" ||
-          serverBgColor === "purple" ||
-          serverBgColor === "green"
-        ) {
-          setBgColor(serverBgColor);
-        } else {
-          setBgColor(externalBgColor);
-        }
-        return;
-      }
-
-      // 2) 없으면 새로 생성
-      const createRes = await axios.post<Recipient>(`${API_BASE}/recipients/`, {
-        name: recipientName,
-        backgroundColor: externalBgColor,
-      });
-      setRecipientId(createRes.data.id);
-      setBgColor(externalBgColor);
-    } catch (error) {
-      console.error("recipient 생성/조회 에러:", error);
+      const res = await axios.get<Recipient>(`${API_BASE}/recipients/${id}/`);
+      setRecipient(res.data);
+    } catch (err) {
+      console.warn("⚠️ 존재하지 않는 recipient입니다:", err);
+      setRecipient(null);
     }
-  }, [externalBgColor, recipientName]);
+  }, [id]);
 
-  // recipient 생성/조회 트리거
-  useEffect(() => {
-    if (recipientName && recipientName.trim() !== "") {
-      createOrGetRecipient();
-    } else {
-      setRecipientId(null);
-      setCards([]);
-      setHasMore(false);
-    }
-  }, [createOrGetRecipient, recipientName]);
+  // ✅ recipient 메시지 불러오기
+  const fetchMessages = useCallback(async () => {
+    if (!id) return;
+    try {
+      const res = await axios.get<ApiMessageResponse>(
+        `${API_BASE}/recipients/${id}/messages/`
+      );
 
-  // recipientId가 세팅되면 메시지 불러오기 (axios)
-  useEffect(() => {
-    if (!recipientId) return;
+      // results 배열 추출
+      const messagesArray: ApiMessage[] = res.data.results;
+      setMessagesData(messagesArray);
 
-    const fetchMessages = async () => {
-      try {
-        const res = await axios.get<ApiMessage[]>(
-          `${API_BASE}/recipients/${recipientId}/messages/`
-        );
-        const data = res.data;
-        setMessagesData(data);
-
-        const initialSlice = data.slice(0, PAGE_SIZE).map((msg) => ({
+      // 첫 페이지 카드 생성
+      const firstPage: CardData[] = messagesArray
+        .slice(0, PAGE_SIZE)
+        .map((msg: ApiMessage) => ({
           id: msg.id,
           author: msg.sender,
           message: msg.content,
@@ -159,24 +129,20 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
           avatarUrl: msg.profileImageURL,
         }));
 
-        setCards(initialSlice);
-        setPage(1);
-        setHasMore(data.length > PAGE_SIZE);
-      } catch (err) {
-        console.error("fetchMessages error:", err);
-        setHasMore(false);
-      }
-    };
+      setCards(firstPage);
+      setPage(1);
+      setHasMore(messagesArray.length > PAGE_SIZE);
+    } catch (err) {
+      console.error("메시지 불러오기 실패:", err);
+    }
+  }, [id]);
 
-    fetchMessages();
-  }, [recipientId]);
-
-  // 추가 메시지 불러오기
-  const fetchMoreCards = () => {
+  // ✅ 무한스크롤 추가 로딩
+  const fetchMoreCards = useCallback(() => {
     const start = page * PAGE_SIZE;
-    const nextSlice = messagesData
+    const nextSlice: CardData[] = messagesData
       .slice(start, start + PAGE_SIZE)
-      .map((msg) => ({
+      .map((msg: ApiMessage) => ({
         id: msg.id,
         author: msg.sender,
         message: msg.content,
@@ -186,70 +152,20 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
       }));
 
     setCards((prev) => [...prev, ...nextSlice]);
-    setPage((p) => p + 1);
+    setPage((prev) => prev + 1);
+    if (start + PAGE_SIZE >= messagesData.length) setHasMore(false);
+  }, [messagesData, page]);
 
-    if (start + PAGE_SIZE >= messagesData.length) {
-      setHasMore(false);
-    }
-  };
-
-  // 배경색 업데이트 PATCH 호출 (axios)
-  const updateBackgroundColor = useCallback(
-    async (newColor: BgColor) => {
-      if (!recipientId) return;
-
-      try {
-        console.log("🔧 PATCH 요청 보내는 중:", newColor);
-        await axios.patch(`${API_BASE}/recipients/${recipientId}/`, {
-          backgroundColor: newColor,
-        });
-        setBgColor(newColor);
-      } catch (err) {
-        console.error("배경색 업데이트 실패:", err);
-      }
-    },
-    [recipientId]
-  );
-
-  // 서버 배경색과 로컬 bgColor 맞추기
+  // ✅ 초기 데이터 로딩
   useEffect(() => {
-    const checkAndUpdateBg = async () => {
-      if (!recipientId) return;
-
-      try {
-        const res = await axios.get<Recipient>(
-          `${API_BASE}/recipients/${recipientId}/`
-        );
-        const serverColor = res.data.backgroundColor;
-
-        if (serverColor !== bgColor) {
-          if (
-            serverColor === "beige" ||
-            serverColor === "blue" ||
-            serverColor === "purple" ||
-            serverColor === "green"
-          ) {
-            setBgColor(serverColor);
-          } else {
-            await updateBackgroundColor(bgColor);
-          }
-        }
-      } catch (err) {
-        console.error("배경색 체크 중 에러:", err);
-      }
-    };
-
-    checkAndUpdateBg();
-  }, [recipientId, bgColor, updateBackgroundColor]);
+    fetchRecipient();
+    fetchMessages();
+  }, [fetchRecipient, fetchMessages]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedCard(null);
   };
-
-  // 디버깅 로그
-  console.log("현재 bgColor:", bgColor);
-  console.log("매핑된 색상 코드:", COLOR_MAP[bgColor]);
 
   return (
     <div
@@ -269,13 +185,11 @@ function MainPages({ externalBgColor, recipientName }: MainPagesProps) {
         <Card
           type="plus"
           onAdd={() => {
-            if (recipientId) {
-              navigate(`/post/${recipientId}/message`);
-            } else {
-              console.warn("recipientId가 아직 없습니다.");
-            }
+            if (id) navigate(`/post/${id}/message`);
+            else console.warn("recipient id 없음");
           }}
         />
+
         {cards
           .slice()
           .sort((a, b) => b.id - a.id)
