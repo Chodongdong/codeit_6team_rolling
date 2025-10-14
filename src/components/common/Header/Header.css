@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-.Header .main {
+.main {
   height: 65px;
   border-bottom: 1px solid #eeeeee;
   display: flex;
@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-.Header .service {
+.service {
   height: 65px;
   border-bottom: 1px solid #eeeeee;
   display: flex;
@@ -56,10 +56,6 @@
   font-weight: 400;
 }
 
-.service__divider {
-  color: #eeeeee;
-}
-
 .service__reactions {
   position: relative;
   display: flex;
@@ -76,6 +72,22 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.service__segment {
+  position: relative;
+  padding-right: 16px; /* 구분선 공간 확보 */
+}
+
+.service__segment::after {
+  content: "";
+  position: absolute;
+  right: 6px; /* 선 위치: padding-right와 조정 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 18px; /* 선 길이 */
+  background-color: #eeeeee; /* 구분선 색상 */
 }
 
 .share-wrapper {
@@ -118,4 +130,13 @@
 
 .popover__item:hover {
   background-color: #f5f5f5;
+}
+
+.emoji-picker-wrapper {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
 }
