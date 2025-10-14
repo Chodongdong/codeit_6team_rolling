@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 // ✅ 공용 컴포넌트
 import Dropdown from "../components/common/Dropdown/Dropdown";
@@ -59,6 +60,7 @@ interface FormData {
 // 메인 컴포넌트
 // =======================================================
 export default function PostMessagePage() {
+  const { id } = useParams();
   const [recipientId, setRecipientId] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     from: "",
@@ -98,26 +100,22 @@ export default function PostMessagePage() {
   // 2️⃣ 기존 recipient 불러오기 (자동 생성 X)
   // =======================================================
   useEffect(() => {
+    if (!id) return;
     const fetchRecipient = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/${TEAM_NAME}/recipients/`);
-        const recipients = res.data || [];
-
-        if (recipients.length > 0) {
-          setRecipientId(recipients[0].id);
-          console.log("✅ 기존 recipient 사용:", recipients[0]);
-        } else {
-          console.warn("⚠️ 현재 존재하는 recipient가 없습니다.");
-          setRecipientId(null);
-        }
+        const res = await axios.get(
+          `${BASE_URL}/${TEAM_NAME}/recipients/${id}/`
+        );
+        setRecipientId(Number(id));
+        console.log("✅ recipient 불러오기 성공:", res.data);
       } catch (err) {
-        console.error("❌ recipient 목록 불러오기 실패:", err);
+        console.warn("⚠️ 존재하지 않는 recipient입니다:", err);
         setRecipientId(null);
       }
     };
 
     fetchRecipient();
-  }, []);
+  }, [id]);
 
   // =======================================================
   // 3️⃣ 입력 핸들러
@@ -135,6 +133,8 @@ export default function PostMessagePage() {
   // =======================================================
   // 4️⃣ 메시지 전송 핸들러
   // =======================================================
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -177,6 +177,9 @@ export default function PostMessagePage() {
       );
 
       console.log("✅ 전송 성공:", res.data);
+
+      navigate(`/post/${recipientId}`, { replace: true });
+
       setSuccessMessage(`🎉 메시지 생성 완료! (ID: ${res.data.id})`);
       setFormData((prev) => ({ ...prev, from: "", message: "" }));
     } catch (err) {
