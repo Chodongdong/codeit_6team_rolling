@@ -7,7 +7,9 @@ const HeaderMain = () => {
   return (
     <header className="Header">
       <div className="main">
-        <img src={logo} alt="Rolling Logo" />
+        <Link to="/">
+          <img src={logo} alt="Rolling Logo" />
+        </Link>
         <Link to="/post">
           <Button variant="outlined" size="md" shape="default">
             {" "}

@@ -61,7 +61,7 @@ interface FormData {
 // =======================================================
 export default function PostMessagePage() {
   const { id } = useParams();
-  const [recipientId, setRecipientId] = useState<number | null>(null);
+  // const [recipientId, setRecipientId] = useState<number | null>(null);
   const [formData, setFormData] = useState<FormData>({
     from: "",
     relation: "지인",
@@ -106,11 +106,14 @@ export default function PostMessagePage() {
         const res = await axios.get(
           `${BASE_URL}/${TEAM_NAME}/recipients/${id}/`
         );
-        setRecipientId(Number(id));
         console.log("✅ recipient 불러오기 성공:", res.data);
+
+        if (res.data?.id) {
+          // setRecipientId(res.data.id);
+        }
       } catch (err) {
         console.warn("⚠️ 존재하지 않는 recipient입니다:", err);
-        setRecipientId(null);
+        // setRecipientId(null);
       }
     };
 
@@ -139,7 +142,7 @@ export default function PostMessagePage() {
     e.preventDefault();
 
     // recipient 존재하지 않으면 콘솔에만 로그 남기고 중단
-    if (!recipientId) {
+    if (!id) {
       console.error(
         "❌ recipient가 존재하지 않습니다. 메시지를 보낼 수 없습니다."
       );
@@ -157,8 +160,8 @@ export default function PostMessagePage() {
     }
 
     const postData = {
-      team: TEAM_NAME,
-      recipientId,
+      // team: TEAM_NAME,
+      // recipientId,
       sender: formData.from,
       profileImageURL: formData.profileImage,
       relationship: formData.relation,
@@ -171,14 +174,14 @@ export default function PostMessagePage() {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${BASE_URL}/${TEAM_NAME}/recipients/${recipientId}/messages/`,
+        `${BASE_URL}/${TEAM_NAME}/recipients/${id}/messages/`,
         postData,
         { headers: { "Content-Type": "application/json" } }
       );
 
       console.log("✅ 전송 성공:", res.data);
 
-      navigate(`/post/${recipientId}`, { replace: true });
+      navigate(`/post/${id}`, { replace: true });
 
       setSuccessMessage(`🎉 메시지 생성 완료! (ID: ${res.data.id})`);
       setFormData((prev) => ({ ...prev, from: "", message: "" }));
