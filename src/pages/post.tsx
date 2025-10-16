@@ -80,7 +80,7 @@ const Post: React.FC = () => {
         team: TEAM_NAME,
         name,
         backgroundColor: mode === "컬러" ? COLORS[selected] : COLORS[0],
-        backgroundImageURL: mode === "이미지" ? imageUrls[selected] : "",
+        backgroundImageURL: mode === "이미지" ? imageUrls[selected] : null,
       };
 
       const recipientRes = await axios.post(
