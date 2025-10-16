@@ -181,6 +181,39 @@ const HeaderService = () => {
     }
   };
 
+  const JAVASCRIPT_KEY = import.meta.env.VITE_APP_JAVASCRIPT_KEY;
+
+  useEffect(() => {
+    if (!window.Kakao.isInitialized()) {
+      window.Kakao.init(JAVASCRIPT_KEY);
+    }
+  }, []); // 빈 배열이면 최초 1회만 실행
+
+  const handleShare = () => {
+    // Kakao SDK의 sendDefault 메서드 사용
+    window.Kakao.Share.sendDefault({
+      objectType: "feed",
+      content: {
+        title: "공유 테스트 제목",
+        description: "이건 카카오톡 공유하기 테스트입니다.",
+        imageUrl: "https://example.com/sample-image.png", // 실제 이미지 URL 넣기
+        link: {
+          mobileWebUrl: "https://example.com",
+          webUrl: "https://example.com",
+        },
+      },
+      buttons: [
+        {
+          title: "웹으로 보기",
+          link: {
+            mobileWebUrl: "https://example.com",
+            webUrl: "https://example.com",
+          },
+        },
+      ],
+    });
+  };
+
   // =======================================================
   // 렌더링
   // =======================================================
@@ -266,10 +299,7 @@ const HeaderService = () => {
             />
             {showShare && (
               <div className="popover popover--share">
-                <button
-                  className="popover__item"
-                  onClick={() => alert("카카오톡 공유")}
-                >
+                <button className="popover__item" onClick={handleShare}>
                   카카오톡 공유
                 </button>
                 <button
