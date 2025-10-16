@@ -10,3 +10,8 @@
   align-items: center;
   z-index: 9999;
 }
+@media (max-width: 360px) {
+  .modal-overlay {
+    display: none !important;
+  }
+}
