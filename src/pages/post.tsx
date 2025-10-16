@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ToggleButton from "../components/common/ToggleButton/ToggleButton";
 import Input from "../components/common/Input/Input";
-import "./Post.css";
+import "./post.css";
 import { useNavigate } from "react-router-dom";
 
 /**
