@@ -187,7 +187,7 @@ const HeaderService = () => {
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(JAVASCRIPT_KEY);
     }
-  }, []); // 빈 배열이면 최초 1회만 실행
+  }); // 빈 배열이면 최초 1회만 실행
 
   const handleShare = () => {
     // Kakao SDK의 sendDefault 메서드 사용
