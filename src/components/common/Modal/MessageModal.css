@@ -122,3 +122,8 @@
   color: #fff;
   font-weight: 600;
 }
+@media (max-width: 360px) {
+  .message-modal {
+    display: none !important;
+  }
+}
