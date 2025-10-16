@@ -1,8 +1,9 @@
 /* 폰트 및 색상 관련 코드 변수로 수정 예정 */
-
 .Header {
   max-width: 1200px;
   margin: 0 auto;
+  font-family: var(--font-family-sans);
+  font-size: clamp(12px, 2vw, 18px);
 }
 
 .main {
@@ -23,7 +24,7 @@
 
 .service__recipient {
   font-weight: 700;
-  font-size: 28px;
+  font-size: clamp(18px, 2vw + 1rem, 28px);
   color: #2b2b2b;
 }
 
@@ -95,6 +96,10 @@
   display: inline-block;
 }
 
+.btn-icon {
+  margin: 8px;
+}
+
 .popover {
   position: absolute;
   top: 100%;
@@ -109,9 +114,10 @@
 }
 
 .popover--reactions {
-  display: flex;
   gap: 8px;
   padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .popover--share {
@@ -139,4 +145,55 @@
   z-index: 100;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
+}
+
+@media (max-width: 1248px) {
+  .main,
+  .service {
+    padding: 0 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 11px 0 11px 24px;
+  }
+
+  .service {
+    padding: 13px 0 13px 24px;
+  }
+
+  .service__count,
+  .service__avatars {
+    display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .service {
+    display: block;
+    align-items: baseline;
+    height: auto;
+    padding: 0;
+  }
+
+  .service__recipient {
+    align-items: flex-start;
+    padding: 12px 20px;
+    font-size: var(--fs-18);
+    font-weight: var(--fw-bold);
+  }
+
+  .service__meta {
+    justify-content: space-between;
+    padding: 8px 20px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .popover--reactions {
+    padding: 16px;
+  }
 }

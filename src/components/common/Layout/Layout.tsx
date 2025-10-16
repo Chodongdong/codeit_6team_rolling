@@ -1,5 +1,6 @@
 import "./Layout.css";
 import { Outlet, useLocation } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 import HeaderMain from "../Header/HeaderMain"; // 로고 + 버튼 헤더
 import HeaderBasic from "../Header/HeaderBasic"; // 로고만 있는 헤더
@@ -7,6 +8,8 @@ import HeaderService from "../Header/HeaderService"; // 서비스 헤더 (ex. �
 
 function Layout() {
   const { pathname } = useLocation();
+
+  const isMobile = useMediaQuery({ query: "(max-width: 360px)" });
 
   // 페이지 구분
   const isMainPage = pathname === "/";
@@ -20,14 +23,16 @@ function Layout() {
   if (isMainPage || isListPage) {
     HeaderComponent = <HeaderMain />;
   } else if (isPostPage) {
-    HeaderComponent = (
+    HeaderComponent = isMobile ? (
+      <HeaderService />
+    ) : (
       <>
         <HeaderBasic />
         <HeaderService />
       </>
     );
   } else if (isCreatePage || isMessagePage) {
-    HeaderComponent = <HeaderBasic />;
+    HeaderComponent = isMobile ? null : <HeaderBasic />;
   }
 
   return (
