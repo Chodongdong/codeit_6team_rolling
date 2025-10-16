@@ -45,7 +45,9 @@
 }
 
 .card-body {
-  overflow: visible;
+  flex: 1; /* 남는 공간 차지하도록 */
+  overflow-y: auto; /* ✅ 세로 스크롤 활성화 */
+  max-height: 120px; /* ✅ 카드 내부에서 스크롤이 생기는 높이 (원하는 값으로 조정 가능) */
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
