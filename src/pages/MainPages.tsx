@@ -3,7 +3,7 @@ import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Card from "../components/common/Card/Card";
 import MessageModal from "../components/common/Modal/MessageModal";
-import "./MainPages.css";
+import "./Mainpages.css";
 import { useNavigate, useParams } from "react-router-dom";
 
 export type BgColor = "beige" | "blue" | "purple" | "green";
