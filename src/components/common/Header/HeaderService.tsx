@@ -220,7 +220,7 @@ const HeaderService = () => {
           {reactions.length > 3 && (
             <img
               className="service__reaction-arrow"
-              src="assets/arrow_down.svg"
+              src="../src/assets/arrow_down.svg"
               alt="reactions more"
               onClick={() => setShowReactions((prev) => !prev)}
             />
@@ -247,7 +247,7 @@ const HeaderService = () => {
             icon="../src/assets/smile.png"
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
-            추가
+            <span className="btn-text">추가</span>
           </Button>
 
           {showEmojiPicker && (
