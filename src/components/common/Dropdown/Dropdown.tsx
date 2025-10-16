@@ -10,7 +10,7 @@
  * - disabled?: boolean                 // 버튼 비활성화 여부
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Dropdown.css";
 
 import { arrowRight, arrowTop } from "../../../assets";

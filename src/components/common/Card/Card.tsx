@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "../buttons/button";
 import Badge from "../Badge/Badge";
 import "./Card.css";
