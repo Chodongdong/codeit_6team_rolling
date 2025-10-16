@@ -31,6 +31,7 @@ interface Recipient {
   id: number;
   name: string;
   backgroundColor: string;
+  backgroundImageURL?: string;
 }
 
 interface ApiMessageResponse {
@@ -171,7 +172,14 @@ function MainPages() {
     <div
       className="mainpages-container"
       style={{
-        backgroundColor: COLOR_MAP[bgColor],
+        backgroundColor: recipient?.backgroundImageURL
+          ? "transparent"
+          : COLOR_MAP[bgColor],
+        backgroundImage: recipient?.backgroundImageURL
+          ? `url(${recipient.backgroundImageURL})`
+          : "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         overflowX: "hidden",
       }}
     >
