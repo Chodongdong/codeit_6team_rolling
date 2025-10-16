@@ -4,7 +4,7 @@ import BadgeEmoji from "../BadgeEmoji/BadgeEmoji";
 import Button from "../buttons/button";
 import ProfileImage from "../Option/ProfileImage";
 import type { Reaction, Avatar } from "./Header.types";
-import { shareIcon } from "../../../assets/index";
+import { shareIcon, smile } from "../../../assets/index";
 import EmojiPicker from "emoji-picker-react";
 import type { EmojiClickData } from "emoji-picker-react";
 import axios from "axios";
@@ -277,7 +277,7 @@ const HeaderService = () => {
           <Button
             variant="outlined"
             size="sm"
-            icon="../src/assets/smile.png"
+            icon={smile}
             onClick={() => setShowEmojiPicker((prev) => !prev)}
           >
             <span className="btn-text">추가</span>
