@@ -1,11 +1,11 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/common/Layout/Layout";
-import Post from "./pages/post";
 import PostMessagePage from "./pages/PostMessagePage";
 import MainHome from "./pages/MainHome";
 import List from "./pages/List";
 import MainPages from "./pages/MainPages";
+import Post from "./pages/Post";
 
 const App = () => {
   return (
