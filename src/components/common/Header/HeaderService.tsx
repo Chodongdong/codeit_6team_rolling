@@ -29,7 +29,7 @@ const HeaderService = () => {
   const recipientId = Number(params.id);
 
   // ✅ 상태 정의
-  const [recipientName, setRecipientName] = useState("수취인");
+  const [recipientName, setRecipientName] = useState("");
   const [avatars, setAvatars] = useState<Avatar[]>([]);
   const [totalWriters, setTotalWriters] = useState(0);
   const [reactions, setReactions] = useState<Reaction[]>([]);
@@ -48,7 +48,7 @@ const HeaderService = () => {
         const res = await axios.get<RecipientResponse>(
           `${BASE_URL}/recipients/${recipientId}/`
         );
-        setRecipientName(res.data.name || "수취인");
+        setRecipientName(res.data.name);
       } catch (err) {
         console.warn("❌ 수취인 불러오기 실패:", err);
       }
