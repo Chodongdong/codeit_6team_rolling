@@ -24,7 +24,7 @@
 
 .service__recipient {
   font-weight: 700;
-  font-size: 28px;
+  font-size: clamp(18px, 2vw + 1rem, 28px);
   color: #2b2b2b;
 }
 
@@ -147,6 +147,13 @@
   border-radius: 12px;
 }
 
+@media (max-width: 1248px) {
+  .main,
+  .service {
+    padding: 0 24px;
+  }
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 11px 0 11px 24px;
@@ -167,6 +174,7 @@
     display: block;
     align-items: baseline;
     height: auto;
+    padding: 0;
   }
 
   .service__recipient {
