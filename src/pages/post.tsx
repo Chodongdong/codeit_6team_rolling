@@ -93,7 +93,7 @@ const Post: React.FC = () => {
 
       // message 생성 payload
       
-      alert(`🎉 롤링페이퍼 생성 완료!\nID: ${recipientId}`);
+      
 
       navigate(`/post/${recipientId}`);
     } catch (error) {
