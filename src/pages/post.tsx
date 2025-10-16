@@ -80,7 +80,7 @@ const Post: React.FC = () => {
         team: TEAM_NAME,
         name,
         backgroundColor: mode === "컬러" ? COLORS[selected] : COLORS[0],
-        backgroundImageUrl: mode === "이미지" ? imageUrls[selected] : "",
+        backgroundImageURL: mode === "이미지" ? imageUrls[selected] : "",
       };
 
       const recipientRes = await axios.post(
@@ -92,8 +92,6 @@ const Post: React.FC = () => {
       console.log("✅ Recipient 생성 완료:", recipientRes.data);
 
       // message 생성 payload
-      
-      
 
       navigate(`/post/${recipientId}`);
     } catch (error) {
